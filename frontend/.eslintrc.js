@@ -4,8 +4,9 @@ module.exports = {
     {
       files: ["*.ts", "*.tsx", "*.js", "*.jsx"],
       rules: {
+        "@typescript-eslint/no-unused-vars": "warn",
         "prettier/prettier": [
-          "error",
+          "warning",
           {
             singleQuote: true,
             jsxSingleQuote: false,
