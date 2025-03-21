@@ -6,11 +6,26 @@ import { AuthFormData, AuthMode } from './types';
 import { useState } from 'react';
 import AuthForm from './components/AuthForm';
 import Button from '@app/ui/components/button';
+import { useLogin } from '@app/api/auth/hooks';
+import { useNavigate } from 'react-router-dom';
 
 const AuthScreen = () => {
   const { t } = useTranslation('auth');
+  const { mutateAsync: login, isPending: isLoginLoading } = useLogin();
+  const navigate = useNavigate();
+
   const { control, handleSubmit } = useForm<AuthFormData>();
   const [authMode, setAuthMode] = useState<AuthMode>('login');
+
+  // TODO proper handling
+  const handleAuth = async (data: AuthFormData) => {
+    navigate('/');
+    const { email, password } = data;
+    const loginData = await login({ login: email, password });
+
+    // eslint-disable-next-line no-console
+    console.log(loginData);
+  };
 
   return (
     <AuthContainer>
@@ -30,7 +45,11 @@ const AuthScreen = () => {
             }
           />
         </TextRow>
-        <StyledButton title={t(`button.${authMode}`)} />
+        <StyledButton
+          title={t(`button.${authMode}`)}
+          isLoading={isLoginLoading}
+          onClick={handleSubmit(handleAuth)}
+        />
       </Wrapper>
     </AuthContainer>
   );

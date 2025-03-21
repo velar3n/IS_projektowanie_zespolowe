@@ -1,11 +1,13 @@
 import styled, { css, useTheme } from 'styled-components';
 import { FontSize } from '../../theme';
 import { getTextComponent } from './getTextComponent';
+import { BeatLoader } from 'react-spinners';
 
 export type ButtonVariant = 'full' | 'link';
 
 export type ButtonProps = {
   title: string;
+  isLoading?: boolean;
   onClick?: () => void;
   variant?: ButtonVariant;
   color?: string;
@@ -16,6 +18,7 @@ export type ButtonProps = {
 const Button = ({
   variant = 'full',
   title,
+  isLoading,
   onClick,
   color,
   fontColor,
@@ -26,9 +29,13 @@ const Button = ({
 
   return (
     <StyledButton variant={variant} onClick={onClick} color={color}>
-      <TextComponent style={{ color: fontColor ?? theme.palette.black }}>
-        {title}
-      </TextComponent>
+      {isLoading ? (
+        <BeatLoader />
+      ) : (
+        <TextComponent style={{ color: fontColor ?? theme.palette.black }}>
+          {title}
+        </TextComponent>
+      )}
     </StyledButton>
   );
 };
