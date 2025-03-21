@@ -1,10 +1,13 @@
 import styled from 'styled-components';
 import { FieldProps } from '../types';
 import { Controller, FieldValues } from 'react-hook-form';
+import Text from '../Text';
+import { HTMLInputTypeAttribute } from 'react';
 
 type InputProps<T extends FieldValues> = {
   leftText?: string;
   rightText?: string;
+  type?: HTMLInputTypeAttribute;
 } & FieldProps<T>;
 
 type RowTextType = 'regular' | 'error';
@@ -12,13 +15,16 @@ type RowTextType = 'regular' | 'error';
 const Input = <T extends FieldValues>({
   name,
   rules,
+  type,
   label,
   placeholder,
   leftText,
   rightText,
+  control,
 }: InputProps<T>) => {
   return (
     <Controller
+      control={control}
       name={name}
       rules={rules}
       render={({ field, fieldState: { error } }) => {
@@ -30,7 +36,9 @@ const Input = <T extends FieldValues>({
                 <LabelText>{label}</LabelText>
               </Row>
             )}
-            <StyledInput placeholder={placeholder} {...field} />
+
+            <StyledInput placeholder={placeholder} {...field} type={type} />
+
             {shouldShowBottomRow && (
               <Row>
                 <RowText type={error ? 'error' : 'regular'}>
@@ -51,14 +59,12 @@ const Row = styled.div`
   justify-content: space-between;
 `;
 
-const RowText = styled.p<{ type?: RowTextType }>`
-  font-size: ${({ theme }) => theme.fontSize.small}px;
-  font-weight: 500;
+const RowText = styled(Text.Regular)<{ type?: RowTextType }>`
   color: ${({ theme, type }) =>
     type === 'error' ? theme.palette.red : theme.palette.grey700};
 `;
 
-const LabelText = styled.p`
+const LabelText = styled(Text.Regular)`
   color: ${({ theme }) => theme.palette.grey900};
 `;
 
