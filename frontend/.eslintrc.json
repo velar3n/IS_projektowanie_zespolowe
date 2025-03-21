@@ -1,0 +1,46 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "extends": [
+    "react-app",
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "rules": {
+    "@typescript-eslint/no-unused-vars": [
+      "warn",
+      {
+        "vars": "all",
+        "args": "after-used",
+        "ignoreRestSiblings": true,
+        "argsIgnorePattern": "^_"
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+      "rules": {
+        "prettier/prettier": [
+          "warn",
+          {
+            "singleQuote": true,
+            "jsxSingleQuote": false,
+            "trailingComma": "all",
+            "arrowParens": "always",
+            "bracketSameLine": false,
+            "bracketSpacing": true,
+            "endOfLine": "lf",
+            "printWidth": 80,
+            "quoteProps": "as-needed",
+            "requirePragma": false,
+            "semi": true,
+            "tabWidth": 2,
+            "experimentalOperatorPosition": "start"
+          }
+        ]
+      }
+    }
+  ]
+}

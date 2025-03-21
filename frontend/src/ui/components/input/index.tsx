@@ -1,13 +1,13 @@
-import styled from "styled-components";
-import { FieldProps } from "../types";
-import { Controller, FieldValues } from "react-hook-form";
+import styled from 'styled-components';
+import { FieldProps } from '../types';
+import { Controller, FieldValues } from 'react-hook-form';
 
 type InputProps<T extends FieldValues> = {
   leftText?: string;
   rightText?: string;
 } & FieldProps<T>;
 
-type RowTextType = "regular" | "error";
+type RowTextType = 'regular' | 'error';
 
 const Input = <T extends FieldValues>({
   name,
@@ -33,7 +33,7 @@ const Input = <T extends FieldValues>({
             <StyledInput placeholder={placeholder} {...field} />
             {shouldShowBottomRow && (
               <Row>
-                <RowText type={error ? "error" : "regular"}>
+                <RowText type={error ? 'error' : 'regular'}>
                   {error ? error.message : leftText}
                 </RowText>
                 <RowText>{rightText}</RowText>
@@ -55,7 +55,7 @@ const RowText = styled.p<{ type?: RowTextType }>`
   font-size: ${({ theme }) => theme.fontSize.small}px;
   font-weight: 500;
   color: ${({ theme, type }) =>
-    type === "error" ? theme.palette.red : theme.palette.grey700};
+    type === 'error' ? theme.palette.red : theme.palette.grey700};
 `;
 
 const LabelText = styled.p`

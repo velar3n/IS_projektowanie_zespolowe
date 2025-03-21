@@ -1,4 +1,4 @@
-import { Control, FieldValues, Path, RegisterOptions } from "react-hook-form";
+import { Control, FieldValues, Path, RegisterOptions } from 'react-hook-form';
 
 export type FieldProps<T extends FieldValues> = {
   placeholder?: string;
@@ -7,6 +7,6 @@ export type FieldProps<T extends FieldValues> = {
   name: Path<T>;
   rules?: Pick<
     RegisterOptions<T>,
-    "maxLength" | "minLength" | "pattern" | "validate" | "required"
+    'maxLength' | 'minLength' | 'pattern' | 'validate' | 'required'
   >;
 };
