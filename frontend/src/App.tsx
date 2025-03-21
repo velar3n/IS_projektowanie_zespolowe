@@ -1,12 +1,12 @@
-import { BrowserRouter } from "react-router-dom";
-import styled from "styled-components";
-import ThemeProvider from "./contexts/ThemeProvider";
+import { BrowserRouter } from 'react-router-dom';
+import styled from 'styled-components';
+import ThemeProvider from './contexts/ThemeProvider';
 
 function App() {
   return (
     <BrowserRouter>
       <ThemeProvider>
-        <StyledHeader>Hello there!</StyledHeader>
+        <StyledHeader className="test">Hello there!</StyledHeader>
       </ThemeProvider>
     </BrowserRouter>
   );
