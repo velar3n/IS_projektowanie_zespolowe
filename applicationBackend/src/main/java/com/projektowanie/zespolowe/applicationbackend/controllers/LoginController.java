@@ -21,6 +21,10 @@ public class LoginController {
         this.authenticationManager = authenticationManager;
     }
 
+    /*
+        * This method is used to authenticate the user and create a session.
+        * Following calls to other endpoints will be authenticated based on user roles and session stored in session cookie
+     */
     @PostMapping("/login")
     public ResponseEntity<Void> login(@RequestBody LoginRequest loginRequest, HttpServletRequest request) {
         Authentication authenticationRequest =
@@ -36,6 +40,7 @@ public class LoginController {
         return ResponseEntity.ok().build();
     }
 
+    //Temporary endpoint for session POC
     @GetMapping("/testSession")
     public ResponseEntity<Void> testSession(HttpServletRequest request) {
 
