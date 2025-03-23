@@ -1,45 +1,99 @@
+-- Drop existing tables in reverse order to handle dependencies
+DROP TABLE IF EXISTS SPRING_SESSION_ATTRIBUTES;
+DROP TABLE IF EXISTS SPRING_SESSION;
+DROP TABLE IF EXISTS vote;
+DROP TABLE IF EXISTS survey_option;
+DROP TABLE IF EXISTS survey_question;
+DROP TABLE IF EXISTS survey;
+DROP TABLE IF EXISTS user_information;
+DROP TABLE IF EXISTS authorities;
 DROP TABLE IF EXISTS users;
 
+
 CREATE TABLE users (
-                       username VARCHAR_IGNORECASE(50) NOT NULL PRIMARY KEY,
-                       password VARCHAR_IGNORECASE(500) NOT NULL,
-                       enabled BOOLEAN NOT NULL
+    username VARCHAR(50) NOT NULL PRIMARY KEY,
+    password_hash VARCHAR(500) NOT NULL,
+    enabled BOOLEAN NOT NULL
 );
 
-DROP TABLE IF EXISTS authorities;
 
 CREATE TABLE authorities (
-                             username VARCHAR_IGNORECASE(50) NOT NULL,
-                             authority VARCHAR_IGNORECASE(50) NOT NULL,
-                             CONSTRAINT fk_authorities_users FOREIGN KEY (username) REFERENCES users (username)
+    username VARCHAR(50) NOT NULL,
+    authority VARCHAR(50) NOT NULL,
+    CONSTRAINT pk_authorities PRIMARY KEY (username, authority),
+    CONSTRAINT fk_authorities_users FOREIGN KEY (username) REFERENCES users (username)
 );
 
-CREATE UNIQUE INDEX ix_auth_username ON authorities (username, authority);
 
-DROP TABLE IF EXISTS SPRING_SESSION;
+CREATE TABLE user_information (
+    username VARCHAR(50) NOT NULL PRIMARY KEY,
+    email VARCHAR(255),
+    created_at DATETIME,
+    last_login DATETIME,
+    status VARCHAR(20) NOT NULL CHECK (status IN ('active', 'blocked', 'deleted')),
+    CONSTRAINT fk_user_info_users FOREIGN KEY (username) REFERENCES users (username)
+);
 
+
+CREATE TABLE survey (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    start_date DATETIME NOT NULL,
+    end_date DATETIME NOT NULL,
+    is_public BOOLEAN NOT NULL,
+    created_by VARCHAR(50) NOT NULL,
+    CONSTRAINT fk_survey_users FOREIGN KEY (created_by) REFERENCES users (username)
+);
+
+
+CREATE TABLE survey_question (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    survey_id INTEGER NOT NULL,
+    question_text TEXT NOT NULL,
+    type VARCHAR(20) NOT NULL CHECK (type IN ('single-choice', 'multiple-choice')),
+    is_required BOOLEAN NOT NULL,
+    CONSTRAINT fk_question_survey FOREIGN KEY (survey_id) REFERENCES survey (id)
+);
+
+
+CREATE TABLE survey_option (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    question_id INTEGER NOT NULL,
+    option_text TEXT NOT NULL,
+    CONSTRAINT fk_option_question FOREIGN KEY (question_id) REFERENCES survey_question (id)
+);
+
+
+CREATE TABLE vote (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id VARCHAR(50) NOT NULL,
+    option_id INTEGER NOT NULL,
+    voted_at DATETIME NOT NULL,
+    CONSTRAINT fk_vote_user FOREIGN KEY (user_id) REFERENCES users (username),
+    CONSTRAINT fk_vote_option FOREIGN KEY (option_id) REFERENCES survey_option (id)
+);
+
+-- Spring Session tables (as per Spring Session documentation)
 CREATE TABLE SPRING_SESSION (
-                                PRIMARY_ID CHAR(36) NOT NULL,
-                                SESSION_ID CHAR(36) NOT NULL,
-                                CREATION_TIME INTEGER NOT NULL,
-                                LAST_ACCESS_TIME INTEGER NOT NULL,
-                                MAX_INACTIVE_INTERVAL INTEGER NOT NULL,
-                                EXPIRY_TIME INTEGER NOT NULL,
-                                PRINCIPAL_NAME VARCHAR(100),
-                                CONSTRAINT SPRING_SESSION_PK PRIMARY KEY (PRIMARY_ID)
+    PRIMARY_ID CHAR(36) NOT NULL,
+    SESSION_ID CHAR(36) NOT NULL,
+    CREATION_TIME INTEGER NOT NULL,
+    LAST_ACCESS_TIME INTEGER NOT NULL,
+    MAX_INACTIVE_INTERVAL INTEGER NOT NULL,
+    EXPIRY_TIME INTEGER NOT NULL,
+    PRINCIPAL_NAME VARCHAR(100),
+    CONSTRAINT SPRING_SESSION_PK PRIMARY KEY (PRIMARY_ID)
 );
 
 CREATE INDEX SPRING_SESSION_IX1 ON SPRING_SESSION (EXPIRY_TIME);
 CREATE INDEX SPRING_SESSION_IX2 ON SPRING_SESSION (SESSION_ID);
 CREATE INDEX SPRING_SESSION_IX3 ON SPRING_SESSION (PRINCIPAL_NAME);
 
-
-DROP TABLE IF EXISTS SPRING_SESSION_ATTRIBUTES;
-
 CREATE TABLE SPRING_SESSION_ATTRIBUTES (
-                                           SESSION_PRIMARY_ID CHAR(36) NOT NULL,
-                                           ATTRIBUTE_NAME VARCHAR(200) NOT NULL,
-                                           ATTRIBUTE_BYTES BYTEA NOT NULL,
-                                           CONSTRAINT SPRING_SESSION_ATTRIBUTES_PK PRIMARY KEY (SESSION_PRIMARY_ID, ATTRIBUTE_NAME),
-                                           CONSTRAINT SPRING_SESSION_ATTRIBUTES_FK FOREIGN KEY (SESSION_PRIMARY_ID) REFERENCES SPRING_SESSION(PRIMARY_ID) ON DELETE CASCADE
+    SESSION_PRIMARY_ID CHAR(36) NOT NULL,
+    ATTRIBUTE_NAME VARCHAR(200) NOT NULL,
+    ATTRIBUTE_BYTES BLOB NOT NULL,
+    CONSTRAINT SPRING_SESSION_ATTRIBUTES_PK PRIMARY KEY (SESSION_PRIMARY_ID, ATTRIBUTE_NAME),
+    CONSTRAINT SPRING_SESSION_ATTRIBUTES_FK FOREIGN KEY (SESSION_PRIMARY_ID) REFERENCES SPRING_SESSION(PRIMARY_ID) ON DELETE CASCADE
 );
