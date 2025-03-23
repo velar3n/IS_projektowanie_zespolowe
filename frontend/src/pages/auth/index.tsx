@@ -60,8 +60,8 @@ const StyledText = styled(Text.Small)`
 `;
 
 const StyledButton = styled(Button).attrs(({ theme }) => ({
-  color: theme.palette.teal,
-  fontColor: theme.palette.ghostWhite,
+  color: theme.palette.purple,
+  fontColor: theme.palette.white,
 }))``;
 
 const TextRow = styled.div`
@@ -76,9 +76,15 @@ const Wrapper = styled.div`
   flex-direction: column;
   gap: 20px;
   height: fit-content;
+  background-color: white;
+  border-radius: 24px;
+  padding: 24px 56px;
+  box-shadow: 5px 5px 8px rgba(0, 0, 0, 0.15);
 `;
 
-const StyledPollIcon = styled(Icon.Poll)`
+const StyledPollIcon = styled(Icon.Poll).attrs(({ theme }) => ({
+  color: theme.palette.purple,
+}))`
   width: 64px;
   height: 64px;
 `;
@@ -98,11 +104,12 @@ const AuthContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  background: linear-gradient(90deg, #6949FD 0%, #B4E5FB 100%)
 `;
 
 const ChangeAuthModeButton = styled(Button).attrs(({ theme }) => ({
   fontSize: 'small',
-  fontColor: theme.palette.teal,
+  fontColor: theme.palette.purple,
   variant: 'link',
 }))``;
 

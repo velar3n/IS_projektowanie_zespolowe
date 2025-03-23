@@ -19,6 +19,8 @@ const theme = {
     grey800: '#343a40',
     grey900: '#212529',
     brand: '#4CC9FE',
+    blue: '#B4E5FB',
+    purple: '#6A49FD',
     teal: '#00879E',
     red: '#d62828',
     ghostWhite: '#F8F8FF',

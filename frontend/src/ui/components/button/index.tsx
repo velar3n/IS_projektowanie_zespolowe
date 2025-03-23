@@ -42,8 +42,9 @@ const Button = ({
 
 const fullCss = css`
   padding: 16px 32px;
-  border-radius: 6px;
+  border-radius: 8px;
   width: 100%;
+  font-size: 16px;
 `;
 
 const StyledButton = styled.button<{
