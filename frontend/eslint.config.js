@@ -29,7 +29,6 @@ export default defineConfig([
       ...tseslint.configs.recommended.rules,
       ...prettierConfig.rules,
       'react/react-in-jsx-scope': 'off',
-      '@/no-unused-vars': 'warn',
       'no-unused-vars': 'warn',
       'no-console': 'warn',
       'prettier/prettier': 'warn',
