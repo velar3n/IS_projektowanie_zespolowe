@@ -1,13 +1,12 @@
-import { Icon, Text } from '@app/ui/components';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import styled from 'styled-components';
 import { AuthFormData, AuthMode } from './types';
 import { useState } from 'react';
-import AuthForm from './components/AuthForm';
-import Button from '@app/ui/components/button';
-import { useLogin } from '@app/api/auth/hooks';
+import { useLogin } from '@/api/auth/hooks';
 import { useNavigate } from 'react-router-dom';
+import { Box, Button, HStack, Stack, Text } from '@chakra-ui/react';
+import PollIcon from '@/components/icons/Poll';
+import AuthForm from './components/AuthForm';
 
 const AuthScreen = () => {
   const { t } = useTranslation('auth');
@@ -28,89 +27,60 @@ const AuthScreen = () => {
   };
 
   return (
-    <AuthContainer>
-      <Wrapper>
-        <Header>
-          <StyledPollIcon />
-          <Text.H1>{t('title')}</Text.H1>
-        </Header>
+    <Box
+      bgGradient="linear-gradient(90deg, #6949fd 0%, #b4e5fb 100%)"
+      height="100%"
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+    >
+      <Stack
+        bgColor="white"
+        width="30vw"
+        boxShadow="lg"
+        justifyContent="center"
+        alignItems="center"
+        borderRadius="xl"
+        gap={8}
+        p={4}
+      >
+        <Stack alignItems="center">
+          <PollIcon width={28} height={28} />
+          <Text fontSize="3xl">{t('title')}</Text>
+        </Stack>
 
-        <AuthForm control={control} mode={authMode} />
-        <TextRow>
-          <StyledText>{t(`${authMode}.text`)}</StyledText>
-          <ChangeAuthModeButton
-            title={t(`${authMode}.button`)}
-            onClick={() =>
-              setAuthMode(authMode === 'login' ? 'register' : 'login')
-            }
-          />
-        </TextRow>
-        <StyledButton
-          title={t(`button.${authMode}`)}
-          isLoading={isLoginLoading}
+        <Stack width="80%">
+          <AuthForm control={control} mode={authMode} />
+
+          <HStack alignItems="center" justifyContent="left" width="100%">
+            <Text color="gray.600" fontSize="sm">
+              {t(`${authMode}.text`)}
+            </Text>
+            <Button
+              variant="plain"
+              onClick={() =>
+                setAuthMode(authMode === 'login' ? 'register' : 'login')
+              }
+            >
+              <Text color="gray.600" fontSize="sm">
+                {t(`${authMode}.button`)}
+              </Text>
+            </Button>
+          </HStack>
+        </Stack>
+
+        <Button
+          colorPalette="purple"
+          px={32}
+          borderRadius="xl"
+          loading={isLoginLoading}
           onClick={handleSubmit(handleAuth)}
-        />
-      </Wrapper>
-    </AuthContainer>
+        >
+          {t(`button.${authMode}`)}
+        </Button>
+      </Stack>
+    </Box>
   );
 };
-
-const StyledText = styled(Text.Small)`
-  color: ${({ theme }) => theme.palette.grey600};
-`;
-
-const StyledButton = styled(Button).attrs(({ theme }) => ({
-  color: theme.palette.purple,
-  fontColor: theme.palette.white,
-}))``;
-
-const TextRow = styled.div`
-  display: flex;
-  flex-direction: row;
-  gap: 2px;
-`;
-
-const Wrapper = styled.div`
-  width: 30vw;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  height: fit-content;
-  background-color: white;
-  border-radius: 24px;
-  padding: 24px 56px;
-  box-shadow: 5px 5px 8px rgba(0, 0, 0, 0.15);
-`;
-
-const StyledPollIcon = styled(Icon.Poll).attrs(({ theme }) => ({
-  color: theme.palette.purple,
-}))`
-  width: 64px;
-  height: 64px;
-`;
-
-const Header = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  gap: 8px;
-  padding-bottom: 16px;
-`;
-
-const AuthContainer = styled.div`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(90deg, #6949FD 0%, #B4E5FB 100%)
-`;
-
-const ChangeAuthModeButton = styled(Button).attrs(({ theme }) => ({
-  fontSize: 'small',
-  fontColor: theme.palette.purple,
-  variant: 'link',
-}))``;
 
 export default AuthScreen;

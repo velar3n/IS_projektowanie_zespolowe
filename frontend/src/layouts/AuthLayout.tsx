@@ -1,17 +1,12 @@
 import { Outlet } from 'react-router-dom';
-import styled from 'styled-components';
+import { Box } from '@chakra-ui/react';
 
 const AuthLayout = () => {
   return (
-    <Container>
+    <Box width="100vw" height="100vh">
       <Outlet />
-    </Container>
+    </Box>
   );
 };
-
-const Container = styled.div`
-  width: 100vw;
-  height: 100vh;
-`;
 
 export default AuthLayout;
