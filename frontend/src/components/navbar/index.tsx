@@ -5,6 +5,7 @@ import PollIcon from '../icons/Poll';
 import { useTranslation } from 'react-i18next';
 import UserAvatar from './UserAvatar';
 import { useNavigate } from 'react-router-dom';
+import { MdOutlineLogin } from 'react-icons/md';
 
 const navbarItems = [
   {
@@ -41,7 +42,20 @@ const Navbar = () => {
           ))}
         </HStack>
       </HStack>
-      <Box>{isLoggedId ? <UserAvatar /> : <Button>{t('Login')}</Button>}</Box>
+      <Box>
+        {isLoggedId ? (
+          <UserAvatar />
+        ) : (
+          <Button
+            px="24px"
+            variant="outline"
+            colorPalette="purple"
+            alignItems="center"
+          >
+            <MdOutlineLogin /> {t('Login')}
+          </Button>
+        )}
+      </Box>
     </Flex>
   );
 };
