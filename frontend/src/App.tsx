@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import HomeLayout from './layouts/HomeLayout';
 import Home from './pages/home';
 import { Provider } from './components/ui/provider';
+import MainLayout from './layouts/MainLayout';
 
 const queryClient = new QueryClient();
 
@@ -14,14 +15,16 @@ function App() {
     <Provider>
       <BrowserRouter>
         <QueryClientProvider client={queryClient}>
-          <Routes>
-            <Route path="/" element={<HomeLayout />}>
-              <Route index element={<Home />} />
-            </Route>
-            <Route path="login" element={<AuthLayout />}>
-              <Route index element={<AuthScreen />} />
-            </Route>
-          </Routes>
+          <MainLayout>
+            <Routes>
+              <Route path="/" element={<HomeLayout />}>
+                <Route index element={<Home />} />
+              </Route>
+              <Route path="login" element={<AuthLayout />}>
+                <Route index element={<AuthScreen />} />
+              </Route>
+            </Routes>
+          </MainLayout>
         </QueryClientProvider>
       </BrowserRouter>
     </Provider>

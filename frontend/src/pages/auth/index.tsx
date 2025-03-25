@@ -3,27 +3,24 @@ import { useTranslation } from 'react-i18next';
 import { AuthFormData, AuthMode } from './types';
 import { useState } from 'react';
 import { useLogin } from '@/api/auth/hooks';
-import { useNavigate } from 'react-router-dom';
 import { Box, Button, HStack, Stack, Text } from '@chakra-ui/react';
 import PollIcon from '@/components/icons/Poll';
 import AuthForm from './components/AuthForm';
 
 const AuthScreen = () => {
   const { t } = useTranslation('auth');
-  const { mutateAsync: login, isPending: isLoginLoading } = useLogin();
-  const navigate = useNavigate();
+  const { control, handleSubmit, setError } = useForm<AuthFormData>();
+  const { mutate: login, isPending: isLoginLoading } = useLogin({
+    onInvalidCredentials: () => {
+      setError('email', {}, { shouldFocus: false });
+      setError('password', { message: t('errors.invalidCredentials') });
+    },
+  });
 
-  const { control, handleSubmit } = useForm<AuthFormData>();
   const [authMode, setAuthMode] = useState<AuthMode>('login');
 
-  // TODO proper handling
-  const handleAuth = async (data: AuthFormData) => {
-    navigate('/');
-    const { email, password } = data;
-    const loginData = await login({ login: email, password });
-
-    // eslint-disable-next-line no-console
-    console.log(loginData);
+  const handleAuth = (data: AuthFormData) => {
+    login({ login: data.email, password: data.password });
   };
 
   return (

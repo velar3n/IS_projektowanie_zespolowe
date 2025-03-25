@@ -6,6 +6,8 @@
     "logout": "Logout"
   },
   "items": {
-    "home": "Home"
+    "home": "Home",
+    "polls": "Polls",
+    "users": "Users"
   }
 }

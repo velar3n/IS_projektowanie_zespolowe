@@ -1,19 +1,25 @@
 import { Button, HStack, Icon, Text } from '@chakra-ui/react';
 import { NavbarItemType } from './types';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useUserStore } from '@/stores/user';
 
 const NavbarItem = ({ item }: { item: NavbarItemType }) => {
   const { t } = useTranslation('navigation', { keyPrefix: 'items' });
   const { pathname } = useLocation();
+  const userRole = useUserStore((state) => state.user?.role);
+  const navigate = useNavigate();
 
   const isActive = pathname === item.path;
+
+  if (item.requiredRole && userRole !== item.requiredRole) return null;
 
   return (
     <Button
       variant="plain"
-      borderBottomWidth={isActive ? '2px' : undefined}
-      borderBottom="solid black"
+      borderBottomWidth="1px"
+      borderBottom={isActive ? 'solid black' : undefined}
+      onClick={() => navigate(item.path)}
     >
       <HStack>
         <Icon>{item.icon}</Icon>

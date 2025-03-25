@@ -12,6 +12,9 @@ const AuthForm = ({
   mode: AuthMode;
 }) => {
   const { t } = useTranslation('auth', { keyPrefix: 'form' });
+  const { t: tValidation } = useTranslation('common', {
+    keyPrefix: 'validation',
+  });
   return (
     <Stack width="100%">
       {mode === 'register' && (
@@ -20,6 +23,9 @@ const AuthForm = ({
           name="name"
           placeholder={t('name.placeholder')}
           label={t('name.label')}
+          rules={{
+            required: tValidation('fieldRequired', { name: 'Full name' }),
+          }}
         />
       )}
       <TextInput
@@ -27,12 +33,18 @@ const AuthForm = ({
         name="email"
         placeholder={t('email.placeholder')}
         label={t('email.label')}
+        rules={{
+          required: tValidation('fieldRequired', { name: 'Email' }),
+        }}
       />
       <TextInput
         control={control}
         name="password"
         label={t('password.label')}
         placeholder={t('password.placeholder')}
+        rules={{
+          required: tValidation('fieldRequired', { name: 'Password' }),
+        }}
         type="password"
       />
     </Stack>

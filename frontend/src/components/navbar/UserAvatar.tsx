@@ -1,3 +1,5 @@
+import { useLogout } from '@/api/auth/hooks';
+import { useUserStore } from '@/stores/user';
 import {
   Avatar,
   Box,
@@ -16,12 +18,16 @@ const USER_NAME = 'John Doe';
 const UserAvatar = () => {
   const [open, setOpen] = useState(false);
   const { t } = useTranslation('navigation', { keyPrefix: 'popover' });
+  const { mutate: logout, isPending: isLogoutPending } = useLogout();
+
+  const userName = useUserStore((state) => state.user?.name);
+
   return (
     <Popover.Root open={open} onOpenChange={(e) => setOpen(e.open)}>
       <Popover.Trigger asChild>
         <Box>
           <Avatar.Root size="lg" onClick={() => setOpen(true)} cursor="pointer">
-            <Avatar.Fallback name={USER_NAME} />
+            <Avatar.Fallback name={userName ?? ''} />
           </Avatar.Root>
         </Box>
       </Popover.Trigger>
@@ -33,7 +39,12 @@ const UserAvatar = () => {
               <Stack padding="32px" alignItems="center" width="100%" gap="12px">
                 <Text>{t('title', { name: USER_NAME })}</Text>
                 <Separator width="100%" />
-                <Button width="100%" colorPalette="red">
+                <Button
+                  width="100%"
+                  colorPalette="red"
+                  onClick={() => logout()}
+                  loading={isLogoutPending}
+                >
                   {t('logout')}
                 </Button>
               </Stack>

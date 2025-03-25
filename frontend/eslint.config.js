@@ -1,46 +1,35 @@
-import { defineConfig } from 'eslint/config';
-import globals from 'globals';
-import tsparser from '@typescript-eslint/parser';
-import js from '@eslint/js';
+import eslint from '@eslint/js';
+import reactPlugin from 'eslint-plugin-react';
+import reactHooks from 'eslint-plugin-react-hooks';
 import tseslint from 'typescript-eslint';
-import react from 'eslint-plugin-react';
-import prettierPlugin from 'eslint-plugin-prettier';
-import prettierConfig from 'eslint-config-prettier';
+import eslintPluginPrettier from 'eslint-plugin-prettier/recommended';
 
-export default defineConfig([
-  {
-    languageOptions: {
-      parserOptions: {
-        ecmaFeatures: {
-          jsx: true,
+export default tseslint
+  .config(
+    eslint.configs.recommended,
+    tseslint.configs.recommended,
+    reactPlugin.configs.flat.recommended,
+    reactPlugin.configs.flat['jsx-runtime'],
+    {
+      settings: {
+        react: {
+          version: 'detect',
         },
       },
-      parser: tsparser,
-      globals: globals.browser,
+      plugins: {
+        'react-hooks': reactHooks,
+      },
+      rules: {
+        ...reactHooks.configs.recommended.rules,
+        'no-console': 'warn',
+        'react/jsx-no-useless-fragment': 'error',
+        '@typescript-eslint/no-unused-vars': 'warn',
+        '@typescript-eslint/no-floating-promises': 'off',
+        '@typescript-eslint/no-empty-object-type': 'off',
+        '@typescript-eslint/no-misused-promises': 'off',
+        '@typescript-eslint/no-unsafe-assignment': 'off',
+        '@typescript-eslint/no-unsafe-return': 'off',
+      },
     },
-    files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'],
-    plugins: {
-      js,
-      '@typescript-eslint': tseslint,
-      prettier: prettierPlugin,
-    },
-    extends: ['js/recommended'],
-    rules: {
-      ...tseslint.configs.recommended.rules,
-      ...prettierConfig.rules,
-      'react/react-in-jsx-scope': 'off',
-      'no-unused-vars': 'warn',
-      'no-console': 'warn',
-      'prettier/prettier': 'warn',
-    },
-  },
-  {
-    files: ['**/*.{js,jsx,mjs,cjs,ts,tsx}'],
-    plugins: {
-      react,
-    },
-    rules: {
-      'react/react-in-jsx-scope': 'off',
-    },
-  },
-]);
+  )
+  .concat(eslintPluginPrettier);
