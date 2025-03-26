@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+// @ts-ignore - Workaround for missing types
 import eslint from 'vite-plugin-eslint';
 import svgr from 'vite-plugin-svgr';
 
