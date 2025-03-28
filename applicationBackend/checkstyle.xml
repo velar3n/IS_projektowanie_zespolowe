@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN" "http://checkstyle.sourceforge.net/dtds/configuration_1_3.dtd">
+<configuration>
+
+    <!-- Main checker module -->
+    <module name="Checker">
+        <module name="TreeWalker">
+            
+            <!-- Indentation: Use 4 spaces for indentation -->
+            <module name="Indentation">
+                <property name="indentation" value="4"/>
+                <property name="tabWidth" value="4"/>
+            </module>
+
+            <!-- Naming conventions for classes, methods, and variables -->
+            <module name="NamingConvention">
+                <property name="checkClassName" value="true"/>
+                <property name="checkMethodName" value="true"/>
+                <property name="checkFieldName" value="true"/>
+            </module>
+
+            <!-- Maximum line length should be 120 characters -->
+            <module name="LineLength">
+                <property name="max" value="120"/>
+            </module>
+
+            <!-- Ensure empty line separation between methods -->
+            <module name="EmptyLineSeparator">
+                <property name="linesBefore" value="2"/>
+            </module>
+
+            <!-- Import order - Spring-related imports should be grouped together -->
+            <module name="ImportOrder">
+                <property name="sortStaticImportsAlphabetically" value="true"/>
+                <property name="groups" value="java,javax,org.springframework,com"/>
+            </module>
+
+            <!-- Ensure curly braces are used even for one-line statements -->
+            <module name="NeedBraces"/>
+
+            <!-- Additional Spring-specific checks -->
+            <module name="SpringAutowiredFieldsCheck"/>
+            
+            <!-- Enforce one statement per line for better readability -->
+            <module name="OneStatementPerLine"/>
+            
+            <!-- Ensure that Spring annotations (like @Autowired, @Value, etc.) are placed correctly -->
+            <module name="AnnotationLocation"/>
+            
+        </module>
+    </module>
+
+</configuration>
