@@ -5,31 +5,6 @@ DROP TABLE IF EXISTS vote;
 DROP TABLE IF EXISTS survey_option;
 DROP TABLE IF EXISTS survey_question;
 DROP TABLE IF EXISTS survey;
-DROP TABLE IF EXISTS user_information;
-DROP TABLE IF EXISTS authorities;
-DROP TABLE IF EXISTS users;
-
-CREATE TABLE users (
-                       username TEXT NOT NULL PRIMARY KEY,
-                       password TEXT NOT NULL,
-                       enabled BOOLEAN NOT NULL
-);
-
-CREATE TABLE authorities (
-                             username TEXT NOT NULL,
-                             authority TEXT NOT NULL,
-                             PRIMARY KEY (username, authority),
-                             FOREIGN KEY (username) REFERENCES users (username)
-);
-
-CREATE TABLE user_information (
-                                  username TEXT NOT NULL PRIMARY KEY,
-                                  email TEXT,
-                                  created_at DATETIME,
-                                  last_login DATETIME,
-                                  status TEXT NOT NULL CHECK (status IN ('active', 'blocked', 'deleted')),
-                                  FOREIGN KEY (username) REFERENCES users (username)
-);
 
 CREATE TABLE survey (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
