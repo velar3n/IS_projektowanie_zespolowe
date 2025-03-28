@@ -29,6 +29,7 @@ export default tseslint
         '@typescript-eslint/no-misused-promises': 'off',
         '@typescript-eslint/no-unsafe-assignment': 'off',
         '@typescript-eslint/no-unsafe-return': 'off',
+        '@typescript-eslint/ban-ts-comment': 'off',
       },
     },
   )

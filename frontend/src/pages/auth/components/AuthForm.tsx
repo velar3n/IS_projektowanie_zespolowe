@@ -20,9 +20,9 @@ const AuthForm = ({
       {mode === 'register' && (
         <TextInput
           control={control}
-          name="name"
-          placeholder={t('name.placeholder')}
-          label={t('name.label')}
+          name="email"
+          placeholder={t('email.placeholder')}
+          label={t('email.label')}
           rules={{
             required: tValidation('fieldRequired', { name: 'Full name' }),
           }}
@@ -30,9 +30,9 @@ const AuthForm = ({
       )}
       <TextInput
         control={control}
-        name="email"
-        placeholder={t('email.placeholder')}
-        label={t('email.label')}
+        name="username"
+        placeholder={t('username.placeholder')}
+        label={t('username.label')}
         rules={{
           required: tValidation('fieldRequired', { name: 'Email' }),
         }}

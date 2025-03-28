@@ -2,7 +2,7 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { AuthFormData, AuthMode } from './types';
 import { useState } from 'react';
-import { useLogin } from '@/api/auth/hooks';
+import { useLogin, useRegister, useSessionData } from '@/api/auth/hooks';
 import { Box, Button, HStack, Stack, Text } from '@chakra-ui/react';
 import PollIcon from '@/components/icons/Poll';
 import AuthForm from './components/AuthForm';
@@ -10,9 +10,11 @@ import AuthForm from './components/AuthForm';
 const AuthScreen = () => {
   const { t } = useTranslation('auth');
   const { control, handleSubmit, setError } = useForm<AuthFormData>();
-  const { mutate: login, isPending: isLoginLoading } = useLogin({
+  const { mutate: register, isPending: isRegisterPending } = useRegister();
+  const { isRefetching: isSessionRefetching } = useSessionData();
+  const { mutate: login, isPending: isLoginPending } = useLogin({
     onInvalidCredentials: () => {
-      setError('email', {}, { shouldFocus: false });
+      setError('username', {}, { shouldFocus: false });
       setError('password', { message: t('errors.invalidCredentials') });
     },
   });
@@ -20,7 +22,12 @@ const AuthScreen = () => {
   const [authMode, setAuthMode] = useState<AuthMode>('login');
 
   const handleAuth = (data: AuthFormData) => {
-    login({ login: data.email, password: data.password });
+    const { username, email, password } = data;
+    if (authMode === 'login') {
+      login({ username, password });
+    } else {
+      register({ username, password, email: email ?? '' });
+    }
   };
 
   return (
@@ -69,8 +76,8 @@ const AuthScreen = () => {
         <Button
           colorPalette="purple"
           px={32}
-          borderRadius="xl"
-          loading={isLoginLoading}
+          borderRadius="xl<em></em>"
+          loading={isLoginPending || isRegisterPending || isSessionRefetching}
           onClick={handleSubmit(handleAuth)}
         >
           {t(`button.${authMode}`)}

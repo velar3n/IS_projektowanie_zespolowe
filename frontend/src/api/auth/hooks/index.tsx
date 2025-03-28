@@ -1,18 +1,25 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import AUTH_MUTATIONS from '@/api/auth/auth.mutations';
 import AUTH_KEYS from '@/api/auth/auth.keys';
 import { AUTH_QUERIES } from '../auth.queries';
 import { useUserStore } from '@/stores/user';
+import { RegisterData } from '../types';
 
 export const useLogin = (settings?: {
   onInvalidCredentials?: () => void;
   onServerError?: () => void;
 }) => {
+  const queryClient = useQueryClient();
+
   return useMutation({
-    mutationFn: ({ login, password }: { login: string; password: string }) =>
-      AUTH_MUTATIONS.login(login, password),
-    mutationKey: [...AUTH_KEYS.LOGIN],
+    mutationFn: (details: { username: string; password: string }) =>
+      AUTH_MUTATIONS.login(details),
+    onSuccess: () => {
+      queryClient.refetchQueries({
+        queryKey: [...AUTH_KEYS.GET_SESSION_DATA],
+      });
+    },
     onError: (error) => {
       if (axios.isAxiosError(error) && error.response) {
         if (error.response.status === 401) {
@@ -25,11 +32,33 @@ export const useLogin = (settings?: {
   });
 };
 
+export const useRegister = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: RegisterData) => {
+      return AUTH_MUTATIONS.register(data);
+    },
+    onSuccess: () => {
+      queryClient.refetchQueries({ queryKey: [...AUTH_KEYS.GET_SESSION_DATA] });
+    },
+    // TODO add proper handling
+    onError: () => {
+      // eslint-disable-next-line no-console
+      console.log('Failed to register');
+    },
+  });
+};
+
 export const useLogout = () => {
   const deleteUser = useUserStore((state) => state.clearUser);
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: () => {
       deleteUser();
+      queryClient.setQueriesData(
+        { queryKey: [...AUTH_KEYS.GET_SESSION_DATA] },
+        () => null,
+      );
       return AUTH_MUTATIONS.logout();
     },
   });
@@ -39,6 +68,6 @@ export const useSessionData = () => {
   return useQuery({
     queryFn: AUTH_QUERIES.getSessionData,
     queryKey: [...AUTH_KEYS.GET_SESSION_DATA],
-    staleTime: 10 * 60 * 1000,
+    staleTime: 60 * 60 * 1000,
   });
 };

@@ -1,13 +1,15 @@
 import axios from 'axios';
 import backendUrl from '../backendUrl';
+import { LoginCredentials, RegisterData } from './types';
 
-// TODO add zustand for storing session data and use sth else than native fetch api
-const login = async (login: string, password: string) => {
+const login = async (details: LoginCredentials) => {
   const endpoint = `${backendUrl}/login`;
+  await axios.post(endpoint, details);
+};
 
-  const data = await axios.post(endpoint, { username: login, password });
-
-  return data;
+const register = async (details: RegisterData) => {
+  const endpoint = `${backendUrl}/register`;
+  await axios.post(endpoint, details);
 };
 
 const logout = async () => {
@@ -16,6 +18,7 @@ const logout = async () => {
 
 const AUTH_MUTATIONS = {
   login,
+  register,
   logout,
 };
 

@@ -7,12 +7,12 @@ import { useUserStore } from '@/stores/user';
 const NavbarItem = ({ item }: { item: NavbarItemType }) => {
   const { t } = useTranslation('navigation', { keyPrefix: 'items' });
   const { pathname } = useLocation();
-  const userRole = useUserStore((state) => state.user?.role);
+  const userRoles = useUserStore((state) => state.user?.roles);
   const navigate = useNavigate();
 
   const isActive = pathname === item.path;
 
-  if (item.requiredRole && userRole !== item.requiredRole) return null;
+  if (item.requiredRole && !userRoles?.includes(item.requiredRole)) return null;
 
   return (
     <Button

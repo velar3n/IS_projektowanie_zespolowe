@@ -1,11 +1,10 @@
-export type UserStatus = 'active' | 'blocked' | 'deleted';
-export type UserRole = 'user' | 'admin';
+import { AuthRoles } from '@/api/types';
 
 export type User = {
-  name: string;
+  username: string;
   email: string;
   status: string;
-  role: UserRole;
+  roles: AuthRoles[];
 };
 
 export type UserStore = {

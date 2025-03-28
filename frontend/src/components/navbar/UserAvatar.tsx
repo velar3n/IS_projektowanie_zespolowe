@@ -13,14 +13,12 @@ import {
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-const USER_NAME = 'John Doe';
-
 const UserAvatar = () => {
   const [open, setOpen] = useState(false);
   const { t } = useTranslation('navigation', { keyPrefix: 'popover' });
   const { mutate: logout, isPending: isLogoutPending } = useLogout();
 
-  const userName = useUserStore((state) => state.user?.name);
+  const userName = useUserStore((state) => state.user?.username);
 
   return (
     <Popover.Root open={open} onOpenChange={(e) => setOpen(e.open)}>
@@ -37,7 +35,7 @@ const UserAvatar = () => {
             <Popover.Arrow />
             <Popover.Body>
               <Stack padding="32px" alignItems="center" width="100%" gap="12px">
-                <Text>{t('title', { name: USER_NAME })}</Text>
+                <Text>{t('title', { name: userName })}</Text>
                 <Separator width="100%" />
                 <Button
                   width="100%"
