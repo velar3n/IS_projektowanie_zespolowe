@@ -1,5 +1,7 @@
 package com.projektowanie.zespolowe.applicationbackend.controllers;
 
+import com.projektowanie.zespolowe.applicationbackend.data.model.User;
+import com.projektowanie.zespolowe.applicationbackend.services.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
@@ -12,13 +14,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Set;
+
 @RestController
 public class LoginController {
 
     private final AuthenticationManager authenticationManager;
+    private final UserService userService;
 
-    public LoginController(AuthenticationManager authenticationManager) {
+    public LoginController(AuthenticationManager authenticationManager, UserService userService) {
         this.authenticationManager = authenticationManager;
+        this.userService = userService;
     }
 
     /*
@@ -40,6 +46,13 @@ public class LoginController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/register")
+    public ResponseEntity<User> register(@RequestBody RegisterRequest registerRequest) {
+        Set<String> roles = Set.of("ROLE_USER");
+        User newUser = userService.createUser(registerRequest.username(), registerRequest.password(), roles, registerRequest.email());
+        return ResponseEntity.ok(newUser);
+    }
+
     //Temporary endpoint for session POC
     @GetMapping("/testSession")
     public ResponseEntity<Void> testSession(HttpServletRequest request) {
@@ -48,6 +61,8 @@ public class LoginController {
     }
 
     public record LoginRequest(String username, String password) {
+    }
+    public record RegisterRequest(String username, String password, String email) {
     }
 
 }
