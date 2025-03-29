@@ -2,28 +2,32 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { AuthFormData, AuthMode } from './types';
 import { useState } from 'react';
-import { useLogin } from '@/api/auth/hooks';
-import { useNavigate } from 'react-router-dom';
+import { useLogin, useRegister, useSessionData } from '@/api/auth/hooks';
 import { Box, Button, HStack, Stack, Text } from '@chakra-ui/react';
 import PollIcon from '@/components/icons/Poll';
 import AuthForm from './components/AuthForm';
 
 const AuthScreen = () => {
   const { t } = useTranslation('auth');
-  const { mutateAsync: login, isPending: isLoginLoading } = useLogin();
-  const navigate = useNavigate();
+  const { control, handleSubmit, setError } = useForm<AuthFormData>();
+  const { mutate: register, isPending: isRegisterPending } = useRegister();
+  const { isRefetching: isSessionRefetching } = useSessionData();
+  const { mutate: login, isPending: isLoginPending } = useLogin({
+    onInvalidCredentials: () => {
+      setError('username', {}, { shouldFocus: false });
+      setError('password', { message: t('errors.invalidCredentials') });
+    },
+  });
 
-  const { control, handleSubmit } = useForm<AuthFormData>();
   const [authMode, setAuthMode] = useState<AuthMode>('login');
 
-  // TODO proper handling
-  const handleAuth = async (data: AuthFormData) => {
-    navigate('/');
-    const { email, password } = data;
-    const loginData = await login({ login: email, password });
-
-    // eslint-disable-next-line no-console
-    console.log(loginData);
+  const handleAuth = (data: AuthFormData) => {
+    const { username, email, password } = data;
+    if (authMode === 'login') {
+      login({ username, password });
+    } else {
+      register({ username, password, email: email ?? '' });
+    }
   };
 
   return (
@@ -72,8 +76,8 @@ const AuthScreen = () => {
         <Button
           colorPalette="purple"
           px={32}
-          borderRadius="xl"
-          loading={isLoginLoading}
+          borderRadius="xl<em></em>"
+          loading={isLoginPending || isRegisterPending || isSessionRefetching}
           onClick={handleSubmit(handleAuth)}
         >
           {t(`button.${authMode}`)}

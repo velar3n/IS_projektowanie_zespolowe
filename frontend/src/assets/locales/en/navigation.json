@@ -1,0 +1,13 @@
+{
+  "logo": "Pollify",
+  "login": "Login",
+  "popover": {
+    "title": "Hello there, {{name}}",
+    "logout": "Logout"
+  },
+  "items": {
+    "home": "Home",
+    "polls": "Polls",
+    "users": "Users"
+  }
+}
