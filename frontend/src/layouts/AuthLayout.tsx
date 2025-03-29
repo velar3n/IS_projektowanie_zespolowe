@@ -1,17 +1,23 @@
-import { Outlet } from 'react-router-dom';
-import styled from 'styled-components';
+import { Outlet, useNavigate } from 'react-router-dom';
+import { Box } from '@chakra-ui/react';
+import { useUserStore } from '@/stores/user';
+import { useEffect } from 'react';
 
 const AuthLayout = () => {
+  const user = useUserStore((store) => store.user);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user) {
+      navigate('/');
+    }
+  });
+
   return (
-    <Container>
+    <Box width="100vw" height="100vh">
       <Outlet />
-    </Container>
+    </Box>
   );
 };
-
-const Container = styled.div`
-  width: 100vw;
-  height: 100vh;
-`;
 
 export default AuthLayout;

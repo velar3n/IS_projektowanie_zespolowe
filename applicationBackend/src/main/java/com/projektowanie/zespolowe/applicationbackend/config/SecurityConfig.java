@@ -34,7 +34,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.httpBasic(withDefaults())
+        http.cors(cors->cors.configurationSource(corsConfigurationSource())).httpBasic(withDefaults())
                 .csrf(CsrfConfigurer::disable)
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.NEVER))
                 .rememberMe(rememberMe -> rememberMe.rememberMeServices(rememberMeServices()))
