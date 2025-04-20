@@ -1,0 +1,43 @@
+{
+  "form": {
+    "save": "Save",
+    "details": {
+      "section": "Form details",
+      "title": {
+        "label": "Title",
+        "placeholder": "Some interestic title",
+        "isPublic": "Public"
+      },
+      "description": {
+        "label": "Description",
+        "placeholder": "Description of the poll"
+      },
+      "startDate": {
+        "label": "Start date"
+      },
+      "endDate": {
+        "label": "End date"
+      }
+    },
+    "questions": {
+      "section": "Form questions",
+      "question": {
+        "addButtonLabel": "Add question",
+        "title": "Question {{number}}:",
+        "input": {
+          "label": "Title",
+          "placeholder": "Type question here..."
+        },
+        "switches": {
+          "isMulti": "Is multiple choice",
+          "isRequired": "Is question required"
+        },
+        "options": {
+          "title": "Options: ",
+          "addButtonLabel": "Add option",
+          "placeholder": "Type question option here..."
+        }
+      }
+    }
+  }
+}

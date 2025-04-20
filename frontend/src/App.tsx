@@ -9,6 +9,7 @@ import MainLayout from './layouts/MainLayout';
 import WithNavbarLayout from './layouts/AuthorizedLayout';
 import Users from './pages/users';
 import Polls from './pages/polls';
+import Poll from './pages/polls/poll';
 
 const queryClient = new QueryClient();
 
@@ -23,6 +24,7 @@ function App() {
                 <Route index element={<Home />} />
                 <Route path="/users" element={<Users />} />
                 <Route path="/polls" element={<Polls />} />
+                <Route path="/polls/poll" element={<Poll />} />
               </Route>
               <Route path="login" element={<AuthLayout />}>
                 <Route index element={<AuthScreen />} />

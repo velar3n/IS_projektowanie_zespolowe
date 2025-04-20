@@ -1,5 +1,11 @@
 {
   "validation": {
     "fieldRequired": "{{name}} is required"
+  },
+  "dialog": {
+    "header": "Do you want to continue?",
+    "destructive": "This operation is irreversible!",
+    "continue": "Continue",
+    "cancel": "Cancel"
   }
 }

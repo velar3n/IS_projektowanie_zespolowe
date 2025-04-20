@@ -6,7 +6,7 @@ const WithNavbarLayout = () => {
   return (
     <Box>
       <Navbar />
-      <Flex justifyContent="center" alignItems="center" paddingTop="30px">
+      <Flex justifyContent="center" alignItems="center" py="32px">
         <Outlet />
       </Flex>
     </Box>
