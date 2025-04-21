@@ -21,7 +21,9 @@
     },
     "questions": {
       "section": "Form questions",
+      "minAmountError": "You have to provide at least one question",
       "question": {
+        "minAmountError": "You have to provide at least one option",
         "addButtonLabel": "Add question",
         "title": "Question {{number}}:",
         "input": {

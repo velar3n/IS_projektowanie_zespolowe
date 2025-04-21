@@ -7,6 +7,11 @@ export type FieldProps<T extends FieldValues> = {
   name: Path<T>;
   rules?: Pick<
     RegisterOptions<T>,
-    'maxLength' | 'minLength' | 'pattern' | 'validate' | 'required'
+    | 'maxLength'
+    | 'minLength'
+    | 'pattern'
+    | 'validate'
+    | 'required'
+    | 'valueAsDate'
   >;
 };

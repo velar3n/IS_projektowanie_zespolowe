@@ -16,6 +16,11 @@ const SurveyOption = ({ control, name, onDelete }: SurveyOptionProps) => {
   const { t } = useTranslation('polls', {
     keyPrefix: 'form.questions.question',
   });
+
+  const { t: tValidation } = useTranslation('common', {
+    keyPrefix: 'validation',
+  });
+
   return (
     <HStack pl="32px" gap="8px">
       <div
@@ -31,6 +36,7 @@ const SurveyOption = ({ control, name, onDelete }: SurveyOptionProps) => {
         name={name}
         control={control}
         placeholder={t('options.placeholder')}
+        rules={{ required: tValidation('required', { name: 'Option text' }) }}
       />
       <ConfirmationModal
         destructive

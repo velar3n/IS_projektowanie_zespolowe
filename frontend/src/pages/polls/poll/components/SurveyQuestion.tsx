@@ -1,6 +1,11 @@
 import TextInput from '@/components/input';
-import { HStack, IconButton, Stack, Text } from '@chakra-ui/react';
-import { Control, FieldPathByValue, useFieldArray } from 'react-hook-form';
+import { Field, HStack, IconButton, Stack, Text } from '@chakra-ui/react';
+import {
+  Control,
+  FieldPathByValue,
+  useFieldArray,
+  useFormState,
+} from 'react-hook-form';
 import { PollFormData, PollQuestion } from '../types';
 import ControlledSwitch from '@/components/input/ControlledSwitch';
 import { useTranslation } from 'react-i18next';
@@ -22,14 +27,28 @@ const SurveyQuestion = ({
   index,
   onDelete,
 }: SurveyQuestionProps) => {
+  const { t: tValidation } = useTranslation('common', {
+    keyPrefix: 'validation',
+  });
   const { t } = useTranslation('polls', {
     keyPrefix: 'form.questions.question',
   });
 
+  const { errors } = useFormState({ control, name });
+
   const { fields, append, remove } = useFieldArray({
     control,
     name: `${name}.options`,
+    rules: {
+      required: t('minAmountError'),
+      minLength: {
+        value: 1,
+        message: t('minAmountError'),
+      },
+    },
   });
+
+  const optionsError = errors?.questions?.[index]?.options;
 
   return (
     <Stack
@@ -57,6 +76,9 @@ const SurveyQuestion = ({
           name={`${name}.questionText`}
           placeholder={t('input.placeholder')}
           label={t('input.label')}
+          rules={{
+            required: tValidation('required', { name: 'Question title' }),
+          }}
         />
         <ControlledSwitch
           control={control}
@@ -70,22 +92,26 @@ const SurveyQuestion = ({
         />
       </Stack>
       <Text>{t('options.title')}</Text>
-      <Stack>
-        {fields.map((field, index) => (
-          <SurveyOption
-            key={field.id}
-            control={control}
-            name={`${name}.options.${index}.text`}
-            onDelete={() => remove(index)}
+      <Field.Root invalid={!!optionsError?.root}>
+        <Stack w="100%">
+          {fields.map((field, index) => (
+            <SurveyOption
+              key={field.id}
+              control={control}
+              name={`${name}.options.${index}.text`}
+              onDelete={() => remove(index)}
+            />
+          ))}
+          <AddElementButton
+            title={t('options.addButtonLabel')}
+            variant="surface"
+            size="small"
+            isError={!!optionsError?.root}
+            onClick={() => append({ text: '' })}
           />
-        ))}
-        <AddElementButton
-          title={t('options.addButtonLabel')}
-          variant="surface"
-          size="small"
-          onClick={() => append({ text: '' })}
-        />
-      </Stack>
+        </Stack>
+        <Field.ErrorText>{optionsError?.root?.message}</Field.ErrorText>
+      </Field.Root>
     </Stack>
   );
 };
