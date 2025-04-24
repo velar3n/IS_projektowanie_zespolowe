@@ -11,6 +11,7 @@ import BooleanCell from '@/components/table/components/BooleanCell';
 import { camelCaseToTitleCase } from '@/utils/text';
 import ActionCell from '@/components/table/components/ActionCell';
 import { useState } from 'react';
+import NavigationCell from '@/components/table/components/NavigationCell';
 
 const Polls = () => {
   const columnHelper = createColumnHelper<PollRow>();
@@ -18,7 +19,14 @@ const Polls = () => {
 
   const columns = [
     columnHelper.accessor('id', { cell: (ctx) => ctx.getValue() }),
-    columnHelper.accessor('name', { cell: (ctx) => ctx.getValue() }),
+    columnHelper.accessor('name', {
+      cell: (ctx) => (
+        <NavigationCell
+          label={ctx.getValue()}
+          destination={`/poll/${ctx.row.original.id}`}
+        />
+      ),
+    }),
     columnHelper.accessor('startDate', {
       cell: (ctx) => ctx.getValue(),
       header: (ctx) => camelCaseToTitleCase(ctx.column.id),
