@@ -1,19 +1,9 @@
-import { Flex, useToken } from '@chakra-ui/react';
+import { useToken } from '@chakra-ui/react';
+import Dot from './shared';
 
 const BooleanCell = ({ value }: { value: boolean }) => {
   const [red, green] = useToken('colors', ['red.500', 'green.500']);
-  return (
-    <Flex justifyContent="center" alignItems="center">
-      <div
-        style={{
-          width: 10,
-          height: 10,
-          borderRadius: 5,
-          backgroundColor: value ? green : red,
-        }}
-      ></div>
-    </Flex>
-  );
+  return <Dot color={value ? green : red} />;
 };
 
 export default BooleanCell;
