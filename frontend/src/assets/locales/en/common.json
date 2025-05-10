@@ -1,5 +1,19 @@
 {
   "validation": {
-    "fieldRequired": "{{name}} is required"
+    "required": "{{name}} is required",
+    "minCharacters": "{{name}} has to contain at least {{number}} characters",
+    "dateInThePast": "Selected date cannot be in the past",
+    "laterDate": "Given date cannot be earlier than {{name}}"
+  },
+  "dialog": {
+    "header": "Do you want to continue?",
+    "destructive": "This operation is irreversible!",
+    "continue": "Continue",
+    "cancel": "Cancel"
+  },
+  "table": {
+    "search": {
+      "placeholder": "Type something to search..."
+    }
   }
 }

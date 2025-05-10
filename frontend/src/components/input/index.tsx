@@ -1,11 +1,13 @@
 import { Controller, FieldValues } from 'react-hook-form';
-import { Input, Field } from '@chakra-ui/react';
+import { Input, Field, Textarea } from '@chakra-ui/react';
 import { HTMLInputTypeAttribute } from 'react';
 import { FieldProps } from './types';
 
 type InputProps<T extends FieldValues> = {
   helperText?: string;
   type?: HTMLInputTypeAttribute;
+  multiline?: boolean;
+  rows?: number;
 } & FieldProps<T>;
 
 const TextInput = <T extends FieldValues>({
@@ -16,7 +18,10 @@ const TextInput = <T extends FieldValues>({
   helperText,
   control,
   type = 'text',
+  multiline = false,
+  rows,
 }: InputProps<T>) => {
+  const InputComponent = multiline ? Textarea : Input;
   return (
     <Controller
       control={control}
@@ -26,7 +31,13 @@ const TextInput = <T extends FieldValues>({
         return (
           <Field.Root invalid={!!error}>
             <Field.Label>{label}</Field.Label>
-            <Input {...field} placeholder={placeholder} type={type} px={2} />
+            <InputComponent
+              {...field}
+              placeholder={placeholder}
+              type={type}
+              px={2}
+              rows={rows}
+            />
             <Field.HelperText>{helperText}</Field.HelperText>
             <Field.ErrorText>{error?.message}</Field.ErrorText>
           </Field.Root>

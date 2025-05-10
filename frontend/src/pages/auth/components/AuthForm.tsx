@@ -24,7 +24,7 @@ const AuthForm = ({
           placeholder={t('email.placeholder')}
           label={t('email.label')}
           rules={{
-            required: tValidation('fieldRequired', { name: 'Full name' }),
+            required: tValidation('required', { name: 'Full name' }),
           }}
         />
       )}
@@ -34,7 +34,7 @@ const AuthForm = ({
         placeholder={t('username.placeholder')}
         label={t('username.label')}
         rules={{
-          required: tValidation('fieldRequired', { name: 'Email' }),
+          required: tValidation('required', { name: 'Email' }),
         }}
       />
       <TextInput
@@ -43,7 +43,7 @@ const AuthForm = ({
         label={t('password.label')}
         placeholder={t('password.placeholder')}
         rules={{
-          required: tValidation('fieldRequired', { name: 'Password' }),
+          required: tValidation('required', { name: 'Password' }),
         }}
         type="password"
       />

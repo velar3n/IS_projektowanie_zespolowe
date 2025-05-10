@@ -10,7 +10,19 @@ const NavbarItem = ({ item }: { item: NavbarItemType }) => {
   const userRoles = useUserStore((state) => state.user?.roles);
   const navigate = useNavigate();
 
-  const isActive = pathname === item.path;
+  const getIsPathActive = () => {
+    const pathParts = pathname.split('/');
+    pathParts.shift();
+
+    const itemPath = item.path.replace('/', '');
+
+    if (itemPath === pathParts[0]) {
+      return true;
+    }
+    return false;
+  };
+
+  getIsPathActive();
 
   if (item.requiredRole && !userRoles?.includes(item.requiredRole)) return null;
 
@@ -18,7 +30,7 @@ const NavbarItem = ({ item }: { item: NavbarItemType }) => {
     <Button
       variant="plain"
       borderBottomWidth="1px"
-      borderBottom={isActive ? 'solid black' : undefined}
+      borderBottom={getIsPathActive() ? 'solid black' : undefined}
       onClick={() => navigate(item.path)}
     >
       <HStack>
