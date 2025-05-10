@@ -1,46 +1,9 @@
 -- Drop existing tables in reverse order to handle dependencies
 DROP TABLE IF EXISTS SPRING_SESSION_ATTRIBUTES;
 DROP TABLE IF EXISTS SPRING_SESSION;
-DROP TABLE IF EXISTS vote;
-DROP TABLE IF EXISTS survey_option;
-DROP TABLE IF EXISTS survey_question;
 DROP TABLE IF EXISTS survey;
+DROP TABLE IF EXISTS vote;
 
-CREATE TABLE survey (
-                        id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        title TEXT NOT NULL,
-                        description TEXT,
-                        start_date DATETIME NOT NULL,
-                        end_date DATETIME NOT NULL,
-                        is_public BOOLEAN NOT NULL,
-                        created_by TEXT NOT NULL,
-                        FOREIGN KEY (created_by) REFERENCES users (username)
-);
-
-CREATE TABLE survey_question (
-                                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                                 survey_id INTEGER NOT NULL,
-                                 question_text TEXT NOT NULL,
-                                 type TEXT NOT NULL CHECK (type IN ('single-choice', 'multiple-choice')),
-                                 is_required BOOLEAN NOT NULL,
-                                 FOREIGN KEY (survey_id) REFERENCES survey (id)
-);
-
-CREATE TABLE survey_option (
-                               id INTEGER PRIMARY KEY AUTOINCREMENT,
-                               question_id INTEGER NOT NULL,
-                               option_text TEXT NOT NULL,
-                               FOREIGN KEY (question_id) REFERENCES survey_question (id)
-);
-
-CREATE TABLE vote (
-                      id INTEGER PRIMARY KEY AUTOINCREMENT,
-                      user_id TEXT NOT NULL,
-                      option_id INTEGER NOT NULL,
-                      voted_at DATETIME NOT NULL,
-                      FOREIGN KEY (user_id) REFERENCES users (username),
-                      FOREIGN KEY (option_id) REFERENCES survey_option (id)
-);
 
 -- Spring Session tables (as per Spring Session documentation)
 CREATE TABLE SPRING_SESSION (

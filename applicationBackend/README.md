@@ -1,4 +1,3 @@
-Here is a basic `README.md` for your backend project:
 
 # Application Backend
 
