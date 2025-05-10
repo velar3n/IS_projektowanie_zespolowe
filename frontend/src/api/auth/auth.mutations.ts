@@ -1,23 +1,25 @@
+import axios from 'axios';
 import backendUrl from '../backendUrl';
+import { LoginCredentials, RegisterData } from './types';
 
-// TODO add zustand for storing session data and use sth else than native fetch api
-const login = async (login: string, password: string) => {
+const login = async (details: LoginCredentials) => {
   const endpoint = `${backendUrl}/login`;
+  await axios.post(endpoint, details);
+};
 
-  const rawResponse = await fetch(endpoint, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ username: login, password }),
-  });
+const register = async (details: RegisterData) => {
+  const endpoint = `${backendUrl}/register`;
+  await axios.post(endpoint, details);
+};
 
-  const res = await rawResponse.json();
-  return res;
+const logout = async () => {
+  return;
 };
 
 const AUTH_MUTATIONS = {
   login,
+  register,
+  logout,
 };
 
 export default AUTH_MUTATIONS;
