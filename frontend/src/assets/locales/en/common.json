@@ -10,5 +10,10 @@
     "destructive": "This operation is irreversible!",
     "continue": "Continue",
     "cancel": "Cancel"
+  },
+  "table": {
+    "search": {
+      "placeholder": "Type something to search..."
+    }
   }
 }
