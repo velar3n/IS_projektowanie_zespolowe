@@ -12,10 +12,12 @@ import { camelCaseToTitleCase } from '@/utils/text';
 import ActionCell from '@/components/table/components/ActionCell';
 import { useState } from 'react';
 import NavigationCell from '@/components/table/components/NavigationCell';
+import { useNavigate } from 'react-router-dom';
 
 const Polls = () => {
   const columnHelper = createColumnHelper<PollRow>();
   const [data, setData] = useState(exampleData);
+  const navigate = useNavigate();
 
   const columns = [
     columnHelper.accessor('id', { cell: (ctx) => ctx.getValue() }),
@@ -73,6 +75,12 @@ const Polls = () => {
         data={data}
         columns={columns as ColumnDef<PollRow>[]}
         searchColumnId="name"
+        buttonConfig={{
+          label: 'Add form',
+          onClick: () => {
+            navigate('/polls/poll');
+          },
+        }}
       />
     </Stack>
   );

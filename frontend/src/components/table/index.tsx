@@ -1,4 +1,4 @@
-import { HStack, Stack, Table } from '@chakra-ui/react';
+import { Button, Flex, HStack, Stack, Table } from '@chakra-ui/react';
 import {
   ColumnDef,
   flexRender,
@@ -14,11 +14,16 @@ type DataTableProps<T> = {
   data: Array<T>;
   columns: Array<ColumnDef<T>>;
   searchColumnId?: keyof T;
+  buttonConfig?: {
+    label: string;
+    onClick: () => void;
+  };
 };
 
 const DataTable = <T,>({
   data,
   columns,
+  buttonConfig,
   searchColumnId,
 }: DataTableProps<T>) => {
   const table = useReactTable({
@@ -34,7 +39,14 @@ const DataTable = <T,>({
     .find((column) => column.id === searchColumnId);
 
   return (
-    <Stack>
+    <Stack gap="20px">
+      {buttonConfig && (
+        <Flex justifyContent="flex-end">
+          <Button onClick={buttonConfig.onClick} px="24px">
+            {buttonConfig.label}
+          </Button>
+        </Flex>
+      )}
       <HStack>
         {filterColumn && <TableSearch column={filterColumn} />}
         <Pagination table={table} />
