@@ -40,6 +40,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login", "/register", "/registerAdmin").permitAll()
                         .requestMatchers("/user", "/user/**").authenticated()
+                        .requestMatchers("/users").hasRole("ADMIN")
                         .requestMatchers("/testSession").authenticated()
                         .requestMatchers("/surveys").hasRole("ADMIN")// Temporary endpoint for session POC
                 );

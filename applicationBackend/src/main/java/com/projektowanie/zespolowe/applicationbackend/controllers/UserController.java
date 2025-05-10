@@ -33,4 +33,11 @@ public class UserController {
     public ResponseEntity<UserInformation> getUserInformation(@RequestParam String username) {
         return ResponseEntity.ok(userService.getUserInformationByUsername(username));
     }
+
+    @GetMapping("/users")
+    public ResponseEntity<List<UserInformation>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsersInformation());
+    }
+
+
 }
