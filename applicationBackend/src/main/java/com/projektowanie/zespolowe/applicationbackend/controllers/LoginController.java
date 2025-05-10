@@ -53,6 +53,14 @@ public class LoginController {
         return ResponseEntity.ok(newUser);
     }
 
+    //temporary endpoint for admin testing
+    @PostMapping("/registerAdmin")
+    public ResponseEntity<User> registerAdmin(@RequestBody RegisterRequest registerRequest) {
+        Set<String> roles = Set.of("ROLE_ADMIN");
+        User newUser = userService.createUser(registerRequest.username(), registerRequest.password(), roles, registerRequest.email());
+        return ResponseEntity.ok(newUser);
+    }
+
     //Temporary endpoint for session POC
     @GetMapping("/testSession")
     public ResponseEntity<Void> testSession(HttpServletRequest request) {

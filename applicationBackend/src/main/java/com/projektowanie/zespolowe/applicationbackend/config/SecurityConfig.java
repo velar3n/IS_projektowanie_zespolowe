@@ -38,9 +38,10 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.NEVER))
                 .rememberMe(rememberMe -> rememberMe.rememberMeServices(rememberMeServices()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/register").permitAll()
-                        .requestMatchers("/user", "/user/**").hasRole("USER")
-                        .requestMatchers("/testSession").hasRole("USER") // Temporary endpoint for session POC
+                        .requestMatchers("/login", "/register", "/registerAdmin").permitAll()
+                        .requestMatchers("/user", "/user/**").authenticated()
+                        .requestMatchers("/testSession").authenticated()
+                        .requestMatchers("/surveys").hasRole("ADMIN")// Temporary endpoint for session POC
                 );
 
         return http.build();
