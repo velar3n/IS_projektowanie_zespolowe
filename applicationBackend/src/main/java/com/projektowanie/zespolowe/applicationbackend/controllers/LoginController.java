@@ -56,7 +56,7 @@ public class LoginController {
     //temporary endpoint for admin testing
     @PostMapping("/registerAdmin")
     public ResponseEntity<User> registerAdmin(@RequestBody RegisterRequest registerRequest) {
-        Set<String> roles = Set.of("ROLE_ADMIN");
+        Set<String> roles = Set.of("ROLE_ADMIN","ROLE_USER");
         User newUser = userService.createUser(registerRequest.username(), registerRequest.password(), roles, registerRequest.email());
         return ResponseEntity.ok(newUser);
     }
