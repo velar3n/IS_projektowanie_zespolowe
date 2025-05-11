@@ -19,6 +19,7 @@ import java.util.Optional;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -125,5 +126,35 @@ class SurveyControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(username = "user", roles = {"USER"})
+    void getAllSurveys_Success() throws Exception {
+        // Arrange
+        Survey survey1 = Survey.builder()
+                .title("Survey 1")
+                .description("Description 1")
+                .startDate(LocalDateTime.now())
+                .endDate(LocalDateTime.now().plusDays(1))
+                .isActive(true)
+                .build();
+
+        Survey survey2 = Survey.builder()
+                .title("Survey 2")
+                .description("Description 2")
+                .startDate(LocalDateTime.now())
+                .endDate(LocalDateTime.now().plusDays(2))
+                .isActive(false)
+                .build();
+
+        when(surveyService.getAllSurveys()).thenReturn(List.of(survey1, survey2));
+
+        // Act & Assert
+        mockMvc.perform(get("/surveys")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].title").value("Survey 1"))
+                .andExpect(jsonPath("$[1].title").value("Survey 2"));
     }
 }
