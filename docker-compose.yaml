@@ -1,0 +1,28 @@
+services:
+  backend:
+    build:
+      context: ./applicationBackend
+      dockerfile: Dockerfile
+    container_name: my_app_backend_container
+    ports:
+      - "8080:8080"
+    volumes:
+      - backend-data:/app # Mount named volume 'backend-data' to /app for SQLite persistence
+    restart: unless-stopped # Restart policy
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: my_app_frontend_container
+    ports:
+      - "3000:80"
+    volumes:
+      # Mount the custom nginx config to overwrite the default one inside the container
+      - ./frontend/default.conf:/etc/nginx/conf.d/default.conf:ro # Use the renamed file
+    depends_on:
+      - backend     # Ensure backend starts before frontend (doesn't guarantee readiness)
+    restart: unless-stopped # Restart policy
+
+volumes:
+  backend-data: {} # Define the named volume for backend data persistence
