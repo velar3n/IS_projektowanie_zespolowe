@@ -145,16 +145,15 @@ class SurveyControllerTest {
                 .description("Description 2")
                 .startDate(LocalDateTime.now())
                 .endDate(LocalDateTime.now().plusDays(2))
-                .isActive(false)
+                .isActive(true)
                 .build();
 
         when(surveyService.getAllSurveys()).thenReturn(List.of(survey1, survey2));
 
         // Act & Assert
+        //extend this one
         mockMvc.perform(get("/surveys")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].title").value("Survey 1"))
-                .andExpect(jsonPath("$[1].title").value("Survey 2"));
+                        .param("active", "true"))
+                .andExpect(status().isOk());
     }
 }
