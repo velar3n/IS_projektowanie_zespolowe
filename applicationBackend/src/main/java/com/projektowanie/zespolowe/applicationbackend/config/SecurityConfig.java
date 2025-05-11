@@ -3,6 +3,7 @@ package com.projektowanie.zespolowe.applicationbackend.config;
 import com.projektowanie.zespolowe.applicationbackend.services.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -42,7 +43,8 @@ public class SecurityConfig {
                         .requestMatchers("/user", "/user/**").authenticated()
                         .requestMatchers("/users").hasRole("ADMIN")
                         .requestMatchers("/testSession").authenticated()
-                        .requestMatchers("/surveys").hasRole("ADMIN")// Temporary endpoint for session POC
+                        .requestMatchers(HttpMethod.POST,"/surveys").hasRole("ADMIN")//
+                        .requestMatchers(HttpMethod.GET,"/surveys").hasRole("USER")// Temporary endpoint for session POC
                 );
 
         return http.build();

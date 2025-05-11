@@ -36,4 +36,15 @@ public class SurveyService {
         survey.setQuestions(questions);
         return surveyRepository.save(survey);
     }
+
+    public List<Survey> getAllSurveys() {
+        return surveyRepository.findAll();
+    }
+    public List<Survey> getActiveSurveys() {
+        return surveyRepository.findAllByIsActive(true);
+    }
+
+    public List<Survey> getInactiveSurveys() {
+        return surveyRepository.findAllByIsActive(false);
+    }
 }

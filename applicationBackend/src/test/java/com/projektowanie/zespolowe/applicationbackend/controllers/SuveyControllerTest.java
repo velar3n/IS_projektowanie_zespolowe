@@ -19,6 +19,7 @@ import java.util.Optional;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -125,5 +126,34 @@ class SurveyControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(username = "user", roles = {"USER"})
+    void getAllSurveys_Success() throws Exception {
+        // Arrange
+        Survey survey1 = Survey.builder()
+                .title("Survey 1")
+                .description("Description 1")
+                .startDate(LocalDateTime.now())
+                .endDate(LocalDateTime.now().plusDays(1))
+                .isActive(true)
+                .build();
+
+        Survey survey2 = Survey.builder()
+                .title("Survey 2")
+                .description("Description 2")
+                .startDate(LocalDateTime.now())
+                .endDate(LocalDateTime.now().plusDays(2))
+                .isActive(true)
+                .build();
+
+        when(surveyService.getAllSurveys()).thenReturn(List.of(survey1, survey2));
+
+        // Act & Assert
+        //extend this one
+        mockMvc.perform(get("/surveys")
+                        .param("active", "true"))
+                .andExpect(status().isOk());
     }
 }
