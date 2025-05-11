@@ -92,6 +92,10 @@ public class UserService implements UserDetailsService {
         return userInformationRepository.findById(username).orElse(null);
     }
 
+    public List<UserInformation> getAllUsersInformation() {
+        return userInformationRepository.findAll();
+    }
+
     public List<String> getUserAuthorities(String username) {
         return userRepository.findById(username)
                 .map(user -> user.getAuthorities().stream()
