@@ -25,10 +25,8 @@ public class Question {
     @Column(name = "type", nullable = false)
     private String type; // MULTIPLE_CHOICE or SINGLE_CHOICE
 
-    @ElementCollection
-    @CollectionTable(name = "survey_question_option", joinColumns = @JoinColumn(name = "question_id"))
-    @Column(name = "options", nullable = false)
-    private List<String> options;
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<QuestionOption> options;
 
     @ManyToOne
     @JsonBackReference

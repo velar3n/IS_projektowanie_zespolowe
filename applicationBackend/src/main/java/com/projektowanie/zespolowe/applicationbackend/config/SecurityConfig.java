@@ -38,13 +38,13 @@ public class SecurityConfig {
                 .csrf(CsrfConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.NEVER))
                 .rememberMe(rememberMe -> rememberMe.rememberMeServices(rememberMeServices()))
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/register", "/registerAdmin").permitAll()
-                        .requestMatchers("/user", "/user/**").authenticated()
-                        .requestMatchers("/users").hasRole("ADMIN")
-                        .requestMatchers("/testSession").authenticated()
-                        .requestMatchers(HttpMethod.POST,"/surveys").hasRole("ADMIN")//
-                        .requestMatchers(HttpMethod.GET,"/surveys").hasRole("USER")// Temporary endpoint for session POC
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll()
+                        // .requestMatchers("/login", "/register", "/registerAdmin").permitAll()
+                        // .requestMatchers("/user", "/user/**").authenticated()
+                        // .requestMatchers("/users").hasRole("ADMIN")
+                        // .requestMatchers("/testSession").authenticated()
+                        // .requestMatchers(HttpMethod.POST,"/surveys").hasRole("ADMIN")//
+                        // .requestMatchers(HttpMethod.GET,"/surveys").hasRole("USER")// Temporary endpoint for session POC
                 );
 
         return http.build();
