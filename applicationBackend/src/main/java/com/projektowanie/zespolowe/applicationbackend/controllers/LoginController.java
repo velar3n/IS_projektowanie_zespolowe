@@ -4,11 +4,13 @@ import com.projektowanie.zespolowe.applicationbackend.data.model.User;
 import com.projektowanie.zespolowe.applicationbackend.services.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,17 +36,23 @@ public class LoginController {
      */
     @PostMapping("/login")
     public ResponseEntity<Void> login(@RequestBody LoginRequest loginRequest, HttpServletRequest request) {
-        Authentication authenticationRequest =
-                UsernamePasswordAuthenticationToken.unauthenticated(loginRequest.username(), loginRequest.password());
-        Authentication authenticationResponse =
-                this.authenticationManager.authenticate(authenticationRequest);
+        try {
+            Authentication authenticationRequest =
+                    UsernamePasswordAuthenticationToken.unauthenticated(loginRequest.username(), loginRequest.password());
+            Authentication authenticationResponse =
+                    this.authenticationManager.authenticate(authenticationRequest);
 
-        SecurityContextHolder.getContext().setAuthentication(authenticationResponse);
+            SecurityContextHolder.getContext().setAuthentication(authenticationResponse);
 
-        HttpSession session = request.getSession(true);
-        session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
+            HttpSession session = request.getSession(true);
+            session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
 
-        return ResponseEntity.ok().build();
+            return ResponseEntity.ok().build();
+        } catch (AuthenticationException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @PostMapping("/register")

@@ -24,6 +24,9 @@ public class UserInformation {
     @JsonBackReference
     private User user;
 
+    @Version
+    private Integer version;
+
     @Column(name = "email")
     private String email;
 
