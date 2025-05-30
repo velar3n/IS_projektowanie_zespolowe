@@ -3,6 +3,8 @@ package com.projektowanie.zespolowe.applicationbackend.controllers;
 import com.projektowanie.zespolowe.applicationbackend.data.model.Survey;
 import com.projektowanie.zespolowe.applicationbackend.services.SurveyService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -39,13 +41,18 @@ public class SurveyController {
     }
 
     @PostMapping("/surveys/{id}")
-    public ResponseEntity<?> postSurveyAnswer(@PathVariable String id,
-            @RequestBody FilledSurveySubmissionRequest submissionRequest) {
+    public ResponseEntity<?> postSurveyAnswer(
+            @PathVariable String id,
+            @RequestBody List<SingleQuestionAnswer> submissionRequest,
+            @AuthenticationPrincipal UserDetails user) {
         try {
-            surveyService.createSurveyResponse(submissionRequest);
+            Optional<String> username = Optional.empty();
+            if (user != null) {
+                username = Optional.of(user.getUsername());
+            }
+            surveyService.createSurveyResponse(id, submissionRequest, username);
             return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e) {
-
             return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
         }
 
@@ -80,12 +87,6 @@ public class SurveyController {
             String text,
             String type,
             List<String> options) {
-    }
-
-    public record FilledSurveySubmissionRequest(
-            String surveyId,
-            String username,
-            List<SingleQuestionAnswer> answers) {
     }
 
     public record SingleQuestionAnswer(

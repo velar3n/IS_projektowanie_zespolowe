@@ -1,6 +1,6 @@
 package com.projektowanie.zespolowe.applicationbackend.services;
 
-import com.projektowanie.zespolowe.applicationbackend.controllers.SurveyController.FilledSurveySubmissionRequest;
+import com.projektowanie.zespolowe.applicationbackend.controllers.SurveyController.SingleQuestionAnswer;
 import com.projektowanie.zespolowe.applicationbackend.controllers.SurveyController.SurveyRequest;
 import com.projektowanie.zespolowe.applicationbackend.data.model.Answer;
 import com.projektowanie.zespolowe.applicationbackend.data.model.Question;
@@ -15,6 +15,7 @@ import com.projektowanie.zespolowe.applicationbackend.data.model.UserSubmissionR
 import com.projektowanie.zespolowe.applicationbackend.services.util.QuestionValidator;
 import com.projektowanie.zespolowe.applicationbackend.services.util.SurveyRequestValidator;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -57,22 +58,25 @@ public class SurveyService {
 
                     question.setOptions(options);
                     return question;
-                })
-                .toList();
+                }).toList();
 
         survey.setQuestions(questions);
         return surveyRepository.save(survey);
+
     }
 
-    public void createSurveyResponse(FilledSurveySubmissionRequest surveySubmissionRequest) {
-        Survey matchingSurvey = surveyRepository.findById(surveySubmissionRequest.surveyId())
+    public void createSurveyResponse(String surveyId, List<SingleQuestionAnswer> surveySubmissionRequest,
+            Optional<String> username) {
+        Survey matchingSurvey = surveyRepository.findById(surveyId)
                 .orElseThrow(() -> new IllegalArgumentException("survey with this id does not exist"));
 
         UserSubmission userSubmission = new UserSubmission();
-        userSubmission.setCreatedBy(surveySubmissionRequest.username());
+        if (username.isPresent()) {
+            userSubmission.setCreatedBy(username.get());
+        }
         userSubmission.setSurvey(matchingSurvey);
 
-        List<Answer> answers = surveySubmissionRequest.answers().stream().map(answerRequest -> {
+        List<Answer> answers = surveySubmissionRequest.stream().map(answerRequest -> {
             Answer singleAnswer = new Answer();
             Question question = questionRepository.findById(answerRequest.questionId())
                     .orElseThrow(() -> new IllegalArgumentException("question with the given id does not exist"));

@@ -18,8 +18,11 @@ public class UserInformation {
     @Id
     private String username; // Same as User.username
 
+    @Version
+    private Long version;
+
     @OneToOne
-    @MapsId  // Ensures this primary key is shared with User
+    @MapsId // Ensures this primary key is shared with User
     @JoinColumn(name = "username")
     @JsonBackReference
     private User user;
