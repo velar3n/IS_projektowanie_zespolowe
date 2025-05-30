@@ -27,7 +27,6 @@ import java.util.stream.Collectors;
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
-    private final AuthorityRepository authorityRepository;
     private final UserInformationRepository userInformationRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -51,6 +50,12 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public User createUser(String username, String password, Set<String> roles, String email) {
+
+        // Check if the user already exists
+        if (userRepository.existsById(username)) {
+            throw new IllegalArgumentException("User with username '" + username + "' already exists.");
+        }
+
         // Create new User entity
         User user = new User();
         user.setUsername(username);
@@ -78,8 +83,6 @@ public class UserService implements UserDetailsService {
 
         // Save everything using repositories
         userRepository.save(user);
-        userInformationRepository.save(userInformation);
-        authorityRepository.saveAll(authorities);
 
         return user;
     }
