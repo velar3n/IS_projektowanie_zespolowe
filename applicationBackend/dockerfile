@@ -1,0 +1,30 @@
+FROM maven:3.9-eclipse-temurin-17 AS builder
+
+WORKDIR /app
+
+# Copy only the pom.xml first to leverage Docker layer caching
+COPY pom.xml .
+
+# Download dependencies (goal 'go-offline' is faster for subsequent builds if pom.xml hasn't changed)
+RUN mvn dependency:go-offline
+
+COPY src ./src
+
+# The JAR file will be created in /app/target/applicationBackend-0.0.1-SNAPSHOT.jar
+RUN mvn package -DskipTests
+
+# Stage 2: Create the final runtime image using JRE 17
+FROM eclipse-temurin:17-jre-jammy
+
+# Set the working directory
+WORKDIR /app
+
+# Renaming it to app.jar for simplicity
+COPY --from=builder /app/target/applicationBackend-0.0.1-SNAPSHOT.jar ./app.jar
+
+EXPOSE 8080
+
+VOLUME /app
+
+# Command to run the application
+ENTRYPOINT ["java", "-jar", "app.jar"]
