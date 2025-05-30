@@ -5,6 +5,7 @@ import com.projektowanie.zespolowe.applicationbackend.services.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -47,18 +48,30 @@ public class LoginController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody RegisterRequest registerRequest) {
-        Set<String> roles = Set.of("ROLE_USER");
-        User newUser = userService.createUser(registerRequest.username(), registerRequest.password(), roles, registerRequest.email());
-        return ResponseEntity.ok(newUser);
+    public ResponseEntity<?> register(@RequestBody RegisterRequest registerRequest) {
+        try {
+            Set<String> roles = Set.of("ROLE_USER");
+            User newUser = userService.createUser(registerRequest.username(), registerRequest.password(), roles, registerRequest.email());
+            return ResponseEntity.ok(newUser);
+        } catch (ObjectOptimisticLockingFailureException e) {
+            return ResponseEntity.status(409).body("Conflict: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("An error occurred: " + e.getMessage());
+        }
     }
 
     //temporary endpoint for admin testing
     @PostMapping("/registerAdmin")
-    public ResponseEntity<User> registerAdmin(@RequestBody RegisterRequest registerRequest) {
-        Set<String> roles = Set.of("ROLE_ADMIN","ROLE_USER");
-        User newUser = userService.createUser(registerRequest.username(), registerRequest.password(), roles, registerRequest.email());
-        return ResponseEntity.ok(newUser);
+    public ResponseEntity<?> registerAdmin(@RequestBody RegisterRequest registerRequest) {
+        try {
+            Set<String> roles = Set.of("ROLE_ADMIN", "ROLE_USER");
+            User newUser = userService.createUser(registerRequest.username(), registerRequest.password(), roles, registerRequest.email());
+            return ResponseEntity.ok(newUser);
+        } catch (ObjectOptimisticLockingFailureException e) {
+            return ResponseEntity.status(409).body("Conflict: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("An error occurred: " + e.getMessage());
+        }
     }
 
     //Temporary endpoint for session POC
