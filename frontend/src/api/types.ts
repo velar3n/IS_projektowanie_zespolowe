@@ -14,3 +14,10 @@ export type UserInfoResponse = {
 export type AuthRolesResponse = {
   roles: AuthRoles[];
 };
+
+export type SingleAnswer = {
+  questionId: string;
+  selectedIds: string[];
+};
+
+export type FilledPollRequest = Array<SingleAnswer>;

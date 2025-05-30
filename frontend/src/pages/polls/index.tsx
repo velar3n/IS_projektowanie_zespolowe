@@ -25,7 +25,7 @@ const Polls = () => {
       cell: (ctx) => (
         <NavigationCell
           label={ctx.getValue()}
-          destination={`/poll/${ctx.row.original.id}`}
+          destination={`/poll/${ctx.row.original.id}?mode=preview`}
         />
       ),
     }),
