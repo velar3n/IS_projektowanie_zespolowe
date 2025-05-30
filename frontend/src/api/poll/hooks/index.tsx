@@ -16,3 +16,9 @@ export const usePollDetails = (id?: string) => {
     enabled: Boolean(id),
   });
 };
+
+export const useSubmitPoll = () => {
+  return useMutation({
+    mutationFn: POLL_MUTATIONS.submitPoll,
+  });
+};

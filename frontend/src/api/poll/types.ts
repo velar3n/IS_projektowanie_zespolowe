@@ -20,3 +20,10 @@ export type PollResponse = {
   endDate: string;
   questions: Array<PollQuestionData>;
 };
+
+export type SingleAnswer = {
+  questionId: string;
+  selectedIds: string[];
+};
+
+export type FilledPollRequest = Array<SingleAnswer>;
