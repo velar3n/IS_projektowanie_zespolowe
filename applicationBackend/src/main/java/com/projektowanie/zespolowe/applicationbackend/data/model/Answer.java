@@ -2,6 +2,8 @@ package com.projektowanie.zespolowe.applicationbackend.data.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,10 +18,12 @@ public class Answer {
 
   @ManyToOne
   @JoinColumn(name = "submission_id")
+  @JsonBackReference
   private UserSubmission submission;
 
   @ManyToOne
   @JoinColumn(name = "question_id")
+  @JsonBackReference
   private Question question;
 
   @ManyToMany

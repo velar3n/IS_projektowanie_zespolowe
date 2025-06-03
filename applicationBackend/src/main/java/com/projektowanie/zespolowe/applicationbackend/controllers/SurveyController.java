@@ -71,6 +71,15 @@ public class SurveyController {
         return ResponseEntity.ok(surveys);
     }
 
+    @GetMapping("/surveys/{id}/results")
+    public ResponseEntity<?> getSurveyResults(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok().body(surveyService.getSurveyResults(id));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
+        }
+    }
+
     public record ErrorResponse(String error) {
     }
 

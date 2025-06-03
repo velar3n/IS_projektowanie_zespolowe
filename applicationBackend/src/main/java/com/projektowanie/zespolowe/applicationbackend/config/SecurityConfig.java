@@ -34,17 +34,18 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.cors(cors->cors.configurationSource(corsConfigurationSource())).httpBasic(withDefaults())
+        http.cors(cors -> cors.configurationSource(corsConfigurationSource())).httpBasic(withDefaults())
                 .csrf(CsrfConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.NEVER))
                 .rememberMe(rememberMe -> rememberMe.rememberMeServices(rememberMeServices()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/register", "/registerAdmin").permitAll()
-                        .requestMatchers("/user", "/user/**").authenticated()
-                        .requestMatchers("/users").hasRole("ADMIN")
-                        .requestMatchers("/testSession").authenticated()
-                        .requestMatchers(HttpMethod.POST,"/surveys").hasRole("ADMIN")//
-                        .requestMatchers(HttpMethod.GET,"/surveys").hasRole("USER")// Temporary endpoint for session POC
+                .requestMatchers("/login", "/register", "/registerAdmin").permitAll()
+                .requestMatchers("/user", "/user/**").authenticated()
+                .requestMatchers("/users").hasRole("ADMIN")
+                .requestMatchers("/testSession").authenticated()
+                .requestMatchers(HttpMethod.POST,"/surveys").hasRole("ADMIN")//
+                .requestMatchers(HttpMethod.GET,"/surveys").hasRole("USER")// Temporary
+                // endpoint for session POC
                 );
 
         return http.build();

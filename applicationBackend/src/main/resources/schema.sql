@@ -1,9 +1,6 @@
 -- Drop existing tables in reverse order to handle dependencies
 DROP TABLE IF EXISTS SPRING_SESSION_ATTRIBUTES;
 DROP TABLE IF EXISTS SPRING_SESSION;
-DROP TABLE IF EXISTS survey;
-DROP TABLE IF EXISTS vote;
-
 
 -- Spring Session tables (as per Spring Session documentation)
 CREATE TABLE SPRING_SESSION (

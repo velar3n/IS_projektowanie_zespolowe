@@ -4,9 +4,11 @@ import com.projektowanie.zespolowe.applicationbackend.data.model.Authority;
 import com.projektowanie.zespolowe.applicationbackend.data.model.User;
 import com.projektowanie.zespolowe.applicationbackend.data.model.UserInformation;
 import com.projektowanie.zespolowe.applicationbackend.data.model.UserInformation.Status;
-import com.projektowanie.zespolowe.applicationbackend.data.model.AuthorityRepository;
 import com.projektowanie.zespolowe.applicationbackend.data.model.UserInformationRepository;
 import com.projektowanie.zespolowe.applicationbackend.data.model.UserRepository;
+import com.projektowanie.zespolowe.applicationbackend.data.model.UserSubmission;
+import com.projektowanie.zespolowe.applicationbackend.data.model.UserSubmissionRepository;
+
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -29,6 +31,7 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final UserInformationRepository userInformationRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserSubmissionRepository userSubmissionRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -44,8 +47,7 @@ public class UserService implements UserDetailsService {
                 user.getPassword(),
                 user.isEnabled(),
                 true, true, true,
-                authorities
-        );
+                authorities);
     }
 
     @Transactional
@@ -105,6 +107,10 @@ public class UserService implements UserDetailsService {
                         .map(Authority::getAuthority)
                         .collect(Collectors.toList()))
                 .orElse(Collections.emptyList());
+    }
+
+    public List<UserSubmission> getUserSubmissions(String username) {
+        return userSubmissionRepository.findAllByCreatedBy(username);
     }
 
 }

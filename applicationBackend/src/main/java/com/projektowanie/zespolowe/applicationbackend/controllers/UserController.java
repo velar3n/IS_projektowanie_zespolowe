@@ -2,13 +2,19 @@ package com.projektowanie.zespolowe.applicationbackend.controllers;
 
 import com.projektowanie.zespolowe.applicationbackend.data.model.User;
 import com.projektowanie.zespolowe.applicationbackend.data.model.UserInformation;
+import com.projektowanie.zespolowe.applicationbackend.data.model.UserSubmission;
 import com.projektowanie.zespolowe.applicationbackend.services.UserService;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+
 //Add base path
 @RestController
 public class UserController {
@@ -39,5 +45,14 @@ public class UserController {
         return ResponseEntity.ok(userService.getAllUsersInformation());
     }
 
+    @GetMapping("/user/submission")
+    public ResponseEntity<List<UserSubmission>> getUserSubmissions(
+            @AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        return ResponseEntity.ok(userService.getUserSubmissions(userDetails.getUsername()));
+    }
 
 }
