@@ -1,7 +1,7 @@
 export type ErrorWithStatus = Error & { status: number };
 
 export type UserStatus = 'active' | 'blocked' | 'deleted';
-export type AuthRoles = 'admin' | 'user';
+export type AuthRoles = 'ROLE_USER' | 'ROLE_ADMIN';
 
 export type UserInfoResponse = {
   username: string;
@@ -9,6 +9,13 @@ export type UserInfoResponse = {
   created_at: string;
   last_login: string;
   status: UserStatus;
+};
+
+export type UserDetailsResponse = Pick<
+  UserInfoResponse,
+  'username' | 'email' | 'status'
+> & {
+  roles: Array<AuthRoles>;
 };
 
 export type AuthRolesResponse = {

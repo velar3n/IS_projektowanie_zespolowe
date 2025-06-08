@@ -22,9 +22,10 @@ public class SessionConfig extends AbstractHttpSessionApplicationInitializer {
     @Bean
     public CookieSerializer cookieSerializer() {
         DefaultCookieSerializer serializer = new DefaultCookieSerializer();
-        serializer.setCookieName("SESSIONID");
-        serializer.setUseSecureCookie(true); // Secure attribute
-        serializer.setUseHttpOnlyCookie(true); // HttpOnly attribute
+        serializer.setCookieName("sessionId");
+        serializer.setSameSite("Lax");
+        serializer.setUseSecureCookie(false);
+        serializer.setUseHttpOnlyCookie(true);
         return serializer;
     }
 }

@@ -2,6 +2,8 @@ package com.projektowanie.zespolowe.applicationbackend.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.projektowanie.zespolowe.applicationbackend.data.model.User;
+import com.projektowanie.zespolowe.applicationbackend.data.model.UserInformationRepository;
+import com.projektowanie.zespolowe.applicationbackend.services.LoginService;
 import com.projektowanie.zespolowe.applicationbackend.services.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,143 +30,148 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class LoginControllerTest {
 
-    @Mock
-    private AuthenticationManager authenticationManager;
+        @Mock
+        private AuthenticationManager authenticationManager;
 
-    @Mock
-    private UserService userService;
+        @Mock
+        private UserService userService;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+        private LoginService loginService;
 
-    @BeforeEach
-    void setupMocks() {
-        MockitoAnnotations.openMocks(this);
-    }
+        @Autowired
+        private ObjectMapper objectMapper;
 
-    private MockMvc buildMockMvc(LoginController controller) {
-        return MockMvcBuilders.standaloneSetup(controller).build();
-    }
+        @BeforeEach
+        void setupMocks() {
+                MockitoAnnotations.openMocks(this);
+        }
 
-    @Test
-    void login_Success() throws Exception {
-        // Arrange
-        Authentication mockAuthentication = mock(Authentication.class);
-        when(authenticationManager.authenticate(any())).thenReturn(mockAuthentication);
+        private MockMvc buildMockMvc(LoginController controller) {
+                return MockMvcBuilders.standaloneSetup(controller).build();
+        }
 
-        LoginController controller = new LoginController(authenticationManager, userService);
-        MockMvc mockMvc = buildMockMvc(controller);
+        @Test
+        void login_Success() throws Exception {
+                // Arrange
+                Authentication mockAuthentication = mock(Authentication.class);
+                when(authenticationManager.authenticate(any())).thenReturn(mockAuthentication);
 
-        LoginController.LoginRequest loginRequest = new LoginController.LoginRequest("testUser", "password");
+                LoginController controller = new LoginController(userService, loginService);
+                MockMvc mockMvc = buildMockMvc(controller);
 
-        // Act & Assert
-        mockMvc.perform(post("/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(loginRequest)))
-                .andExpect(status().isOk());
-    }
+                LoginController.LoginRequest loginRequest = new LoginController.LoginRequest("testUser", "password");
 
-    @Test
-    void login_InvalidCredentials() throws Exception {
-        // Arrange
-        doThrow(new AuthenticationException("Invalid credentials") {
-        }).when(authenticationManager).authenticate(any());
+                // Act & Assert
+                mockMvc.perform(post("/login")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(loginRequest)))
+                                .andExpect(status().isOk());
+        }
 
-        LoginController controller = new LoginController(authenticationManager, userService);
-        MockMvc mockMvc = buildMockMvc(controller);
+        @Test
+        void login_InvalidCredentials() throws Exception {
+                // Arrange
+                doThrow(new AuthenticationException("Invalid credentials") {
+                }).when(authenticationManager).authenticate(any());
 
-        LoginController.LoginRequest loginRequest = new LoginController.LoginRequest("invalidUser", "wrongPassword");
+                LoginController controller = new LoginController(userService, loginService);
+                MockMvc mockMvc = buildMockMvc(controller);
 
-        // Act & Assert
-        mockMvc.perform(post("/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(loginRequest)))
-                .andExpect(status().isUnauthorized());
-    }
+                LoginController.LoginRequest loginRequest = new LoginController.LoginRequest("invalidUser",
+                                "wrongPassword");
 
-    @Test
-    void register_Success() throws Exception {
-        // Arrange
-        User mockUser = new User();
-        mockUser.setUsername("newUser");
+                // Act & Assert
+                mockMvc.perform(post("/login")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(loginRequest)))
+                                .andExpect(status().isUnauthorized());
+        }
 
-        when(userService.createUser(
-                eq("newUser"),
-                eq("password"),
-                eq(Set.of("ROLE_USER")),
-                eq("newUser@example.com")
-        )).thenReturn(mockUser);
+        @Test
+        void register_Success() throws Exception {
+                // Arrange
+                User mockUser = new User();
+                mockUser.setUsername("newUser");
 
-        LoginController controller = new LoginController(authenticationManager, userService);
-        MockMvc mockMvc = buildMockMvc(controller);
+                when(userService.createUser(
+                                eq("newUser"),
+                                eq("password"),
+                                eq(Set.of("ROLE_USER")),
+                                eq("newUser@example.com"))).thenReturn(mockUser);
 
-        LoginController.RegisterRequest request = new LoginController.RegisterRequest("newUser", "password", "newUser@example.com");
+                LoginController controller = new LoginController(userService, loginService);
+                MockMvc mockMvc = buildMockMvc(controller);
 
-        // Act & Assert
-        mockMvc.perform(post("/register")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk());
-    }
+                LoginController.RegisterRequest request = new LoginController.RegisterRequest("newUser", "password",
+                                "newUser@example.com");
 
-    @Test
-    void register_UserAlreadyExists() throws Exception {
-        // Arrange
-        doThrow(new ObjectOptimisticLockingFailureException(User.class, "User already exists"))
-                .when(userService).createUser(anyString(), anyString(), anySet(), anyString());
+                // Act & Assert
+                mockMvc.perform(post("/register")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)))
+                                .andExpect(status().isOk());
+        }
 
-        LoginController controller = new LoginController(authenticationManager, userService);
-        MockMvc mockMvc = buildMockMvc(controller);
+        @Test
+        void register_UserAlreadyExists() throws Exception {
+                // Arrange
+                doThrow(new ObjectOptimisticLockingFailureException(User.class, "User already exists"))
+                                .when(userService).createUser(anyString(), anyString(), anySet(), anyString());
 
-        LoginController.RegisterRequest request = new LoginController.RegisterRequest("existingUser", "password", "existingUser@example.com");
+                LoginController controller = new LoginController(userService, loginService);
+                MockMvc mockMvc = buildMockMvc(controller);
 
-        // Act & Assert
-        mockMvc.perform(post("/register")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isConflict());
-    }
+                LoginController.RegisterRequest request = new LoginController.RegisterRequest("existingUser",
+                                "password", "existingUser@example.com");
 
-    @Test
-    void registerAdmin_Success() throws Exception {
-        // Arrange
-        User mockUser = new User();
-        mockUser.setUsername("adminUser");
+                // Act & Assert
+                mockMvc.perform(post("/register")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)))
+                                .andExpect(status().isConflict());
+        }
 
-        when(userService.createUser(
-                eq("adminUser"),
-                eq("password"),
-                eq(Set.of("ROLE_ADMIN", "ROLE_USER")),
-                eq("adminUser@example.com")
-        )).thenReturn(mockUser);
+        @Test
+        void registerAdmin_Success() throws Exception {
+                // Arrange
+                User mockUser = new User();
+                mockUser.setUsername("adminUser");
 
-        LoginController controller = new LoginController(authenticationManager, userService);
-        MockMvc mockMvc = buildMockMvc(controller);
+                when(userService.createUser(
+                                eq("adminUser"),
+                                eq("password"),
+                                eq(Set.of("ROLE_ADMIN", "ROLE_USER")),
+                                eq("adminUser@example.com"))).thenReturn(mockUser);
 
-        LoginController.RegisterRequest request = new LoginController.RegisterRequest("adminUser", "password", "adminUser@example.com");
+                LoginController controller = new LoginController(userService, loginService);
+                MockMvc mockMvc = buildMockMvc(controller);
 
-        // Act & Assert
-        mockMvc.perform(post("/registerAdmin")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk());
-    }
+                LoginController.RegisterRequest request = new LoginController.RegisterRequest("adminUser", "password",
+                                "adminUser@example.com");
 
-    @Test
-    void registerAdmin_UserAlreadyExists() throws Exception {
-        // Arrange
-        doThrow(new ObjectOptimisticLockingFailureException(User.class, "User already exists"))
-                .when(userService).createUser(anyString(), anyString(), anySet(), anyString());
+                // Act & Assert
+                mockMvc.perform(post("/registerAdmin")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)))
+                                .andExpect(status().isOk());
+        }
 
-        LoginController controller = new LoginController(authenticationManager, userService);
-        MockMvc mockMvc = buildMockMvc(controller);
+        @Test
+        void registerAdmin_UserAlreadyExists() throws Exception {
+                // Arrange
+                doThrow(new ObjectOptimisticLockingFailureException(User.class, "User already exists"))
+                                .when(userService).createUser(anyString(), anyString(), anySet(), anyString());
 
-        LoginController.RegisterRequest request = new LoginController.RegisterRequest("existingAdmin", "password", "existingAdmin@example.com");
+                LoginController controller = new LoginController(userService, loginService);
+                MockMvc mockMvc = buildMockMvc(controller);
 
-        // Act & Assert
-        mockMvc.perform(post("/registerAdmin")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isConflict());
-    }
+                LoginController.RegisterRequest request = new LoginController.RegisterRequest("existingAdmin",
+                                "password", "existingAdmin@example.com");
+
+                // Act & Assert
+                mockMvc.perform(post("/registerAdmin")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)))
+                                .andExpect(status().isConflict());
+        }
 }

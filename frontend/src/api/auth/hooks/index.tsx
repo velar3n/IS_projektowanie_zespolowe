@@ -2,9 +2,9 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import AUTH_MUTATIONS from '@/api/auth/auth.mutations';
 import AUTH_KEYS from '@/api/auth/auth.keys';
-import { AUTH_QUERIES } from '../auth.queries';
 import { useUserStore } from '@/stores/user';
 import { RegisterData } from '../types';
+import { AUTH_QUERIES } from '../auth.queries';
 
 export const useLogin = (settings?: {
   onInvalidCredentials?: () => void;
@@ -54,12 +54,13 @@ export const useLogout = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: () => {
-      deleteUser();
-      queryClient.setQueriesData(
-        { queryKey: [...AUTH_KEYS.GET_SESSION_DATA] },
-        () => null,
-      );
       return AUTH_MUTATIONS.logout();
+    },
+    onSuccess: () => {
+      deleteUser();
+      queryClient.refetchQueries({
+        queryKey: [...AUTH_KEYS.GET_SESSION_DATA],
+      });
     },
   });
 };

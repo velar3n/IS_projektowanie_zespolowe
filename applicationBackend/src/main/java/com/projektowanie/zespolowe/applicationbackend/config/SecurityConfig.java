@@ -1,6 +1,9 @@
 package com.projektowanie.zespolowe.applicationbackend.config;
 
 import com.projektowanie.zespolowe.applicationbackend.services.UserService;
+
+import jakarta.servlet.http.HttpServletResponse;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -14,13 +17,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.session.security.web.authentication.SpringSessionRememberMeServices;
-import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import java.util.List;
-
-import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
@@ -33,20 +30,27 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.cors(cors -> cors.configurationSource(corsConfigurationSource())).httpBasic(withDefaults())
+    public SecurityFilterChain filterChain(HttpSecurity http, CorsConfigurationSource corsConfigurationSource)
+            throws Exception {
+        http.cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .csrf(CsrfConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.NEVER))
                 .rememberMe(rememberMe -> rememberMe.rememberMeServices(rememberMeServices()))
-                .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login", "/register", "/registerAdmin").permitAll()
-                .requestMatchers("/user", "/user/**").authenticated()
-                .requestMatchers("/users").hasRole("ADMIN")
-                .requestMatchers("/testSession").authenticated()
-                .requestMatchers(HttpMethod.POST,"/surveys").hasRole("ADMIN")//
-                .requestMatchers(HttpMethod.GET,"/surveys").hasRole("USER")// Temporary
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll()
+                // .requestMatchers("/login", "/register", "/registerAdmin").permitAll()
+                // .requestMatchers("/user", "/user/**").authenticated()
+                // .requestMatchers("/users").hasRole("ADMIN")
+                // .requestMatchers("/testSession").authenticated()
+                // .requestMatchers(HttpMethod.POST, "/surveys").hasRole("ADMIN")//
+                // .requestMatchers(HttpMethod.GET, "/surveys").hasRole("USER")// Temporary
                 // endpoint for session POC
-                );
+                ).logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("sessionId")
+                        .logoutSuccessHandler((request, response, auth) -> {
+                            response.setStatus(HttpServletResponse.SC_OK);
+                        }));
 
         return http.build();
     }
@@ -65,17 +69,4 @@ public class SecurityConfig {
         rememberMeServices.setAlwaysRemember(true);
         return rememberMeServices;
     }
-
-    // Temp development CORS setup
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("*"));
-        configuration.setAllowedMethods(List.of("*"));
-        configuration.setAllowedHeaders(List.of("*"));
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
-
 }

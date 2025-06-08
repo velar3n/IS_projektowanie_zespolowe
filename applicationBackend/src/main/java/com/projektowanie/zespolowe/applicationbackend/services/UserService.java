@@ -2,6 +2,7 @@ package com.projektowanie.zespolowe.applicationbackend.services;
 
 import com.projektowanie.zespolowe.applicationbackend.data.model.Authority;
 import com.projektowanie.zespolowe.applicationbackend.data.model.User;
+import com.projektowanie.zespolowe.applicationbackend.data.model.UserData;
 import com.projektowanie.zespolowe.applicationbackend.data.model.UserInformation;
 import com.projektowanie.zespolowe.applicationbackend.data.model.UserInformation.Status;
 import com.projektowanie.zespolowe.applicationbackend.data.model.UserInformationRepository;
@@ -87,6 +88,21 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
 
         return user;
+    }
+
+    public UserData getUserDetails(String username) {
+
+        UserInformation userInformation = userInformationRepository
+                .findUserInformationByUsername(username);
+        List<String> roles = getUserAuthorities(username);
+
+        UserData userData = new UserData();
+        userData.setEmail(userInformation.getEmail());
+        userData.setUsername(username);
+        userData.setStatus(userInformation.getStatus());
+        userData.setRoles(roles);
+
+        return userData;
     }
 
     public User getUserByUsername(String username) {
