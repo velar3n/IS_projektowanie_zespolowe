@@ -1,6 +1,11 @@
 import axios from 'axios';
 import backendUrl from '../backendUrl';
-import { PollResponse } from './types';
+import {
+  PollResponse,
+  PollResultsResponse,
+  UserSubmission,
+  UserSubmissionsResult,
+} from './types';
 
 const getPollById = async (id: string) => {
   const endpoint = `${backendUrl}/surveys/${id}`;
@@ -12,12 +17,28 @@ const getPollById = async (id: string) => {
 const getUserSubmissions = async () => {
   const endpoint = `${backendUrl}/user/submissions`;
   const { data } = await axios.get(endpoint, { withCredentials: true });
-  return data;
+  return data as UserSubmissionsResult;
+};
+
+const getPollResults = async (pollId: string) => {
+  const endpoint = `${backendUrl}/surveys/${pollId}/results`;
+  const { data } = await axios.get(endpoint, { withCredentials: true });
+
+  return data as PollResultsResponse;
+};
+
+const getUserSubmission = async (id: string) => {
+  const endpoint = `${backendUrl}/user/submissions/${id}`;
+  const { data } = await axios.get(endpoint, { withCredentials: true });
+
+  return data as UserSubmission;
 };
 
 const POLL_QUERIES = {
   getPollById,
   getUserSubmissions,
+  getPollResults,
+  getUserSubmission,
 };
 
 export default POLL_QUERIES;

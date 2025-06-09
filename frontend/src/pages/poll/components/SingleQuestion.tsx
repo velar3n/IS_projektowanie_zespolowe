@@ -1,8 +1,7 @@
 import { PollQuestionData } from '@/api/poll/types';
-import { Checkbox, RadioGroup, Stack, Text } from '@chakra-ui/react';
+import { Checkbox, Stack, Text } from '@chakra-ui/react';
 import { Control, useController, useFieldArray } from 'react-hook-form';
 import { PollSubmissionFormData } from '../types';
-import { Fragment } from 'react/jsx-runtime';
 import { CheckedChangeDetails } from 'node_modules/@chakra-ui/react/dist/types/components/checkbox/namespace';
 
 type SingleQuestionProps = {
@@ -43,55 +42,48 @@ const SingleQuestion = ({
     name: `anwers.${index}.selected`,
   });
 
-  const Wrapper = isSingleChoice ? RadioGroup.Root : Fragment;
-
-  const handleRadio = (value: string) => {
-    options.forEach((option, index) => {
-      const numId = parseInt(value);
-      update(index, { optionId: option.id, selected: numId === option.id });
-    });
-  };
-
   return (
     <Stack>
       <Text fontSize="lg">{`${index + 1}. ${text}`}</Text>
       <Stack>
-        <Wrapper
-          {...(isSingleChoice
-            ? {
-                onValueChange: (e) => !disabled && handleRadio(e.value ?? ''),
-              }
-            : {})}
-        >
-          {fields.map((field, index) => {
-            const matchingOption = options.find(
-              (option) => option.id === field.optionId,
-            );
-            if (!matchingOption) return null;
-            return (
-              <Stack key={index} pb="5px">
-                {isSingleChoice ? (
-                  <RadioField
-                    text={matchingOption.text}
-                    id={matchingOption.id.toString()}
-                  />
-                ) : (
-                  <CheckboxField
-                    text={matchingOption.text}
-                    checked={field.selected}
-                    onChecked={(e) =>
-                      !disabled &&
+        {fields.map((field, index) => {
+          const matchingOption = options.find(
+            (option) => option.id === field.optionId,
+          );
+          if (!matchingOption) return null;
+          return (
+            <Stack key={index} pb="5px">
+              {isSingleChoice ? (
+                <RadioField
+                  checked={field.selected}
+                  text={matchingOption.text}
+                  id={matchingOption.id.toString()}
+                  onChange={() => {
+                    if (disabled) return;
+                    for (const [index, value] of fields.entries()) {
                       update(index, {
-                        optionId: matchingOption.id,
-                        selected: !!e.checked,
-                      })
+                        optionId: value.optionId,
+                        selected: value.optionId === matchingOption.id,
+                      });
                     }
-                  />
-                )}
-              </Stack>
-            );
-          })}
-        </Wrapper>
+                  }}
+                />
+              ) : (
+                <CheckboxField
+                  text={matchingOption.text}
+                  checked={field.selected}
+                  onChecked={(e) =>
+                    !disabled &&
+                    update(index, {
+                      optionId: matchingOption.id,
+                      selected: !!e.checked,
+                    })
+                  }
+                />
+              )}
+            </Stack>
+          );
+        })}
       </Stack>
       {error && (
         <Text color="red" fontSize="sm">
@@ -108,13 +100,22 @@ type FieldProps = {
   onChecked: (e: CheckedChangeDetails) => void;
 };
 
-const RadioField = ({ text, id }: { text: string; id: string }) => {
+const RadioField = ({
+  text,
+  id,
+  checked,
+  onChange,
+}: {
+  text: string;
+  id: string;
+  checked: boolean;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}) => {
   return (
-    <RadioGroup.Item value={id}>
-      <RadioGroup.ItemHiddenInput />
-      <RadioGroup.ItemIndicator />
-      <RadioGroup.ItemText>{text}</RadioGroup.ItemText>
-    </RadioGroup.Item>
+    <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+      <input type="radio" value={id} checked={checked} onChange={onChange} />
+      <span>{text}</span>
+    </label>
   );
 };
 

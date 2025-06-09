@@ -1,4 +1,8 @@
-import { usePollDetails, useSubmitPoll } from '@/api/poll/hooks';
+import {
+  usePollDetails,
+  useSubmitPoll,
+  useUserSubmission,
+} from '@/api/poll/hooks';
 import FullScreenSpinner from '@/components/FullScreenSpinner';
 import { Stack } from '@chakra-ui/react';
 import { useParams, useSearchParams } from 'react-router-dom';
@@ -6,8 +10,8 @@ import PollHeader from './components/PollHeader';
 import PollQuestions from './components/PollQuestions';
 import { useForm } from 'react-hook-form';
 import { PollMode, PollSubmissionFormData } from './types';
-import { useEffect, useState } from 'react';
-import { FilledPollRequest } from '@/api/poll/types';
+import { useEffect } from 'react';
+import { FilledPollRequest, PollResponse } from '@/api/poll/types';
 import { toaster } from '@/components/ui/toaster';
 
 const getPollMode = (mode: string | null): PollMode => {
@@ -17,15 +21,34 @@ const getPollMode = (mode: string | null): PollMode => {
   return 'form';
 };
 
+const getDefaultValues = (data: PollResponse): PollSubmissionFormData => {
+  const initialData: PollSubmissionFormData = {
+    anwers: data.questions.map((question) => ({
+      questionId: question.id,
+      selected: question.options.map((option) => ({
+        optionId: option.id,
+        selected: false,
+      })),
+    })),
+  };
+  return initialData;
+};
+
 const SinglePoll = () => {
   const [searchParams] = useSearchParams();
-  const [pollMode] = useState<PollMode>(getPollMode(searchParams.get('mode')));
+  const submissionId = searchParams.get('submissionId');
 
   const { pollId } = useParams();
   const { data, isLoading } = usePollDetails(pollId);
+  const { data: submissionDetails } = useUserSubmission(submissionId ?? '');
   const { mutateAsync: submitPoll } = useSubmitPoll();
 
-  const { control, reset, handleSubmit } = useForm<PollSubmissionFormData>();
+  const {
+    control,
+    reset,
+    handleSubmit,
+    formState: { defaultValues },
+  } = useForm<PollSubmissionFormData>();
 
   const handlePollSubmisstion = async (data: PollSubmissionFormData) => {
     if (!pollId) return;
@@ -43,22 +66,41 @@ const SinglePoll = () => {
     }
   };
 
-  const isEditable = pollMode === 'form';
+  const isEditable = getPollMode(searchParams.get('mode')) === 'form';
 
   useEffect(() => {
     if (data) {
-      const initialData: PollSubmissionFormData = {
-        anwers: data.questions.map((question) => ({
-          questionId: question.id,
-          selected: question.options.map((option) => ({
-            optionId: option.id,
-            selected: false,
-          })),
-        })),
-      };
+      const initialData = getDefaultValues(data);
       reset(initialData);
     }
   }, [data, reset]);
+
+  useEffect(() => {
+    if (data && submissionDetails) {
+      const newValues: PollSubmissionFormData = {
+        anwers: data.questions.map((question) => {
+          const matchingAnswer = submissionDetails.answers.find(
+            (a) => a.id === question.id,
+          );
+
+          return {
+            questionId: question.id,
+            selected: question.options.map((option) => {
+              const isSelected = matchingAnswer?.selectedOptions.some(
+                (o) => o.id === option.id,
+              );
+              return {
+                optionId: option.id,
+                selected: !!isSelected,
+              };
+            }),
+          };
+        }),
+      };
+
+      reset(newValues);
+    }
+  }, [data, defaultValues?.anwers, reset, submissionDetails]);
 
   if (isLoading && !data) {
     return <FullScreenSpinner />;

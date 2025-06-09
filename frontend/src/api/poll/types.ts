@@ -27,3 +27,30 @@ export type SingleAnswer = {
 };
 
 export type FilledPollRequest = Array<SingleAnswer>;
+
+export type UserSubmission = {
+  answers: Array<{
+    id: number;
+    selectedOptions: Array<SingleOptionData>;
+  }>;
+  id: number;
+  createdBy: string;
+  survey: Omit<PollResponse, 'questions'>;
+};
+
+export type UserSubmissionsResult = Array<UserSubmission>;
+
+export type SingleResult = {
+  id: number;
+  text: string;
+  count: number;
+};
+
+export type PollResultsResponse = {
+  survey: Omit<PollResponse, 'questions'>;
+  questions: Array<{
+    id: number;
+    text: string;
+    results: Array<SingleResult>;
+  }>;
+};

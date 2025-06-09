@@ -22,3 +22,26 @@ export const useSubmitPoll = () => {
     mutationFn: POLL_MUTATIONS.submitPoll,
   });
 };
+
+export const useUserSubmissions = () => {
+  return useQuery({
+    queryFn: POLL_QUERIES.getUserSubmissions,
+    queryKey: POLL_KEYS.GET_SUBMISSIONS,
+  });
+};
+
+export const usePollResults = (id?: string) => {
+  return useQuery({
+    queryFn: () => POLL_QUERIES.getPollResults(id!),
+    queryKey: POLL_KEYS.GET_POLL_RESULTS,
+    enabled: Boolean(id),
+  });
+};
+
+export const useUserSubmission = (id?: string) => {
+  return useQuery({
+    queryFn: () => POLL_QUERIES.getUserSubmission(id!),
+    queryKey: [...POLL_KEYS.GET_SUBMISSION, id],
+    enabled: Boolean(id),
+  });
+};

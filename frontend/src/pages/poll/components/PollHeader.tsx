@@ -7,11 +7,13 @@ import { FaCalendar } from 'react-icons/fa';
 type PollHeaderProps = Partial<
   Pick<PollResponse, 'title' | 'description' | 'startDate' | 'endDate'>
 > & {
+  isSummary?: boolean;
   onSubmit?: () => void;
 };
 
 const PollHeader = ({
   title,
+  isSummary = false,
   description,
   startDate,
   endDate,
@@ -22,7 +24,7 @@ const PollHeader = ({
       <Stack>
         <HStack justify="space-between">
           <Text as="b" fontSize="4xl">
-            {title}
+            {`${title}${isSummary ? ' - Results' : ''}`}
           </Text>
           {onSubmit && (
             <Button onClick={onSubmit} px="32px">
