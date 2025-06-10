@@ -1,7 +1,7 @@
 export type ErrorWithStatus = Error & { status: number };
 
 export type UserStatus = 'active' | 'blocked' | 'deleted';
-export type AuthRoles = 'ROLE_USER' | 'ROLE_ADMIN';
+export type AuthRoles = 'USER' | 'ADMIN';
 
 export type UserInfoResponse = {
   username: string;
@@ -28,3 +28,18 @@ export type SingleAnswer = {
 };
 
 export type FilledPollRequest = Array<SingleAnswer>;
+
+export type PollType = 'MULTIPLE-CHOICE' | 'SINGLE-CHOICE';
+
+export type CreatePollRequest = {
+  titile: string;
+  description: string;
+  startDate: string;
+  endDate: string;
+  isPublic: boolean;
+  questions: Array<{
+    text: string;
+    type: PollType;
+    options: string[];
+  }>;
+};

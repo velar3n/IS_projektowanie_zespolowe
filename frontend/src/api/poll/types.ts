@@ -54,3 +54,18 @@ export type PollResultsResponse = {
     results: Array<SingleResult>;
   }>;
 };
+
+export type PollType = 'MULTIPLE-CHOICE' | 'SINGLE-CHOICE';
+
+export type CreatePollRequest = {
+  title: string;
+  description: string;
+  startDate: string;
+  endDate: string;
+  isPublic: boolean;
+  questions: Array<{
+    text: string;
+    type: PollType;
+    options: string[];
+  }>;
+};

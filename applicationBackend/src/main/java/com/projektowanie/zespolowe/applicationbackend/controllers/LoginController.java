@@ -1,5 +1,6 @@
 package com.projektowanie.zespolowe.applicationbackend.controllers;
 
+import com.projektowanie.zespolowe.applicationbackend.data.enums.UserAuthority;
 import com.projektowanie.zespolowe.applicationbackend.data.model.User;
 import com.projektowanie.zespolowe.applicationbackend.data.model.UserData;
 import com.projektowanie.zespolowe.applicationbackend.services.LoginService;
@@ -41,7 +42,7 @@ public class LoginController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest registerRequest) {
         try {
-            Set<String> roles = Set.of("ROLE_USER");
+            Set<UserAuthority> roles = Set.of(UserAuthority.USER);
             User newUser = userService.createUser(registerRequest.username(), registerRequest.password(), roles,
                     registerRequest.email());
             return ResponseEntity.ok(newUser);
@@ -56,7 +57,7 @@ public class LoginController {
     @PostMapping("/registerAdmin")
     public ResponseEntity<?> registerAdmin(@RequestBody RegisterRequest registerRequest) {
         try {
-            Set<String> roles = Set.of("ROLE_ADMIN", "ROLE_USER");
+            Set<UserAuthority> roles = Set.of(UserAuthority.ADMIN, UserAuthority.USER);
             User newUser = userService.createUser(registerRequest.username(), registerRequest.password(), roles,
                     registerRequest.email());
             return ResponseEntity.ok(newUser);

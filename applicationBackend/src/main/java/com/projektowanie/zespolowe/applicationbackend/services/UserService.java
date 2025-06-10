@@ -1,5 +1,6 @@
 package com.projektowanie.zespolowe.applicationbackend.services;
 
+import com.projektowanie.zespolowe.applicationbackend.data.enums.UserAuthority;
 import com.projektowanie.zespolowe.applicationbackend.data.model.Authority;
 import com.projektowanie.zespolowe.applicationbackend.data.model.User;
 import com.projektowanie.zespolowe.applicationbackend.data.model.UserData;
@@ -40,7 +41,7 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         Set<SimpleGrantedAuthority> authorities = user.getAuthorities().stream()
-                .map(auth -> new SimpleGrantedAuthority(auth.getAuthority()))
+                .map(auth -> new SimpleGrantedAuthority(auth.getAuthority().toString()))
                 .collect(Collectors.toSet());
 
         return new org.springframework.security.core.userdetails.User(
@@ -52,20 +53,16 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public User createUser(String username, String password, Set<String> roles, String email) {
-
-        // Check if the user already exists
+    public User createUser(String username, String password, Set<UserAuthority> roles, String email) {
         if (userRepository.existsById(username)) {
             throw new IllegalArgumentException("User with username '" + username + "' already exists.");
         }
 
-        // Create new User entity
         User user = new User();
         user.setUsername(username);
         user.setPassword(passwordEncoder.encode(password));
         user.setEnabled(true);
 
-        // Create UserInformation with default values
         UserInformation userInformation = new UserInformation();
         userInformation.setUsername(username);
         userInformation.setEmail(email);
@@ -74,17 +71,14 @@ public class UserService implements UserDetailsService {
         userInformation.setStatus(Status.ACTIVE);
         userInformation.setUser(user);
 
-        // Set relationships
         user.setUserInformation(userInformation);
 
-        // Create authorities
         Set<Authority> authorities = roles.stream()
-                .map(role -> new Authority(username, role, user))
+                .map(role -> new Authority(null, username, role, user))
                 .collect(Collectors.toSet());
 
         user.setAuthorities(authorities);
 
-        // Save everything using repositories
         userRepository.save(user);
 
         return user;
@@ -94,7 +88,7 @@ public class UserService implements UserDetailsService {
 
         UserInformation userInformation = userInformationRepository
                 .findUserInformationByUsername(username);
-        List<String> roles = getUserAuthorities(username);
+        List<UserAuthority> roles = getUserAuthorities(username);
 
         UserData userData = new UserData();
         userData.setEmail(userInformation.getEmail());
@@ -117,7 +111,7 @@ public class UserService implements UserDetailsService {
         return userInformationRepository.findAll();
     }
 
-    public List<String> getUserAuthorities(String username) {
+    public List<UserAuthority> getUserAuthorities(String username) {
         return userRepository.findById(username)
                 .map(user -> user.getAuthorities().stream()
                         .map(Authority::getAuthority)
@@ -127,6 +121,13 @@ public class UserService implements UserDetailsService {
 
     public List<UserSubmission> getUserSubmissions(String username) {
         return userSubmissionRepository.findAllByCreatedBy(username);
+    }
+
+    public UserSubmission getUserSubmission(String username, String submissionId) {
+        UserSubmission userSubmission = userSubmissionRepository.findById(submissionId)
+                .orElseThrow(() -> new IllegalArgumentException("submission not found"));
+
+        return userSubmission;
     }
 
 }

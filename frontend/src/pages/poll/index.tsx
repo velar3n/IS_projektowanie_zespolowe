@@ -66,7 +66,8 @@ const SinglePoll = () => {
     }
   };
 
-  const isEditable = getPollMode(searchParams.get('mode')) === 'form';
+  const isEditable =
+    getPollMode(searchParams.get('mode')) === 'form' && !submissionId;
 
   useEffect(() => {
     if (data) {
@@ -110,7 +111,9 @@ const SinglePoll = () => {
     <Stack minW="60%">
       <Stack gap="32px">
         <PollHeader
+          pollId={data?.id}
           title={data?.title}
+          shouldShowResultsButton={!!submissionId}
           description={data?.description}
           startDate={data?.startDate}
           endDate={data?.endDate}

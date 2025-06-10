@@ -57,7 +57,7 @@ const SingleQuestion = ({
                 <RadioField
                   checked={field.selected}
                   text={matchingOption.text}
-                  id={matchingOption.id.toString()}
+                  disabled={disabled}
                   onChange={() => {
                     if (disabled) return;
                     for (const [index, value] of fields.entries()) {
@@ -70,6 +70,7 @@ const SingleQuestion = ({
                 />
               ) : (
                 <CheckboxField
+                  disabled={disabled}
                   text={matchingOption.text}
                   checked={field.selected}
                   onChecked={(e) =>
@@ -96,32 +97,42 @@ const SingleQuestion = ({
 
 type FieldProps = {
   checked: boolean;
+  disabled?: boolean;
   text: string;
   onChecked: (e: CheckedChangeDetails) => void;
 };
 
 const RadioField = ({
   text,
-  id,
   checked,
+  disabled,
   onChange,
 }: {
   text: string;
-  id: string;
   checked: boolean;
+  disabled?: boolean;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) => {
   return (
     <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-      <input type="radio" value={id} checked={checked} onChange={onChange} />
+      <input
+        type="radio"
+        checked={checked}
+        onChange={onChange}
+        disabled={disabled}
+      />
       <span>{text}</span>
     </label>
   );
 };
 
-const CheckboxField = ({ checked, onChecked, text }: FieldProps) => {
+const CheckboxField = ({ checked, disabled, onChecked, text }: FieldProps) => {
   return (
-    <Checkbox.Root checked={checked} onCheckedChange={(e) => onChecked(e)}>
+    <Checkbox.Root
+      disabled={disabled}
+      checked={checked}
+      onCheckedChange={(e) => onChecked(e)}
+    >
       <Checkbox.HiddenInput />
       <Checkbox.Control>
         <Checkbox.Indicator />

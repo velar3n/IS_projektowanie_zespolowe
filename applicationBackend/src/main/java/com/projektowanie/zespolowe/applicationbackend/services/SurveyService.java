@@ -155,11 +155,11 @@ public class SurveyService {
     }
 
     public List<Survey> getActiveSurveys() {
-        return surveyRepository.findAllByIsActive(true);
+        return surveyRepository.findAllByIsPublic(true);
     }
 
     public List<Survey> getInactiveSurveys() {
-        return surveyRepository.findAllByIsActive(false);
+        return surveyRepository.findAllByIsPublic(false);
     }
 
     public Optional<Survey> getSurveyDetails(String id) {

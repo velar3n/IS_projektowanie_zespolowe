@@ -8,12 +8,12 @@ const AdminLayout = () => {
   const user = useUserStore((state) => state.user);
   const navigate = useNavigate();
 
-  const isAllowed = user?.roles.includes('admin');
+  const isAllowed = user?.roles.includes('ADMIN');
 
   useLayoutEffect(() => {
     if (user && !isAllowed) {
       toaster.create({
-        title: 'test ',
+        title: 'You are not allowed to visit this route',
         type: 'error',
       });
       navigate('/');

@@ -59,11 +59,11 @@ public class SurveyController {
     }
 
     @GetMapping("/surveys")
-    public ResponseEntity<List<Survey>> getAllSurveys(@RequestParam(required = false) Boolean active) {
+    public ResponseEntity<List<Survey>> getAllSurveys(@RequestParam(required = false) Boolean isPublic) {
         List<Survey> surveys;
-        if (active == null) {
+        if (isPublic == null) {
             surveys = surveyService.getAllSurveys();
-        } else if (active) {
+        } else if (isPublic) {
             surveys = surveyService.getActiveSurveys();
         } else {
             surveys = surveyService.getInactiveSurveys();
@@ -88,7 +88,7 @@ public class SurveyController {
             String description,
             LocalDateTime startDate,
             LocalDateTime endDate,
-            Optional<Boolean> isActive,
+            Optional<Boolean> isPublic,
             List<QuestionRequest> questions) {
     }
 

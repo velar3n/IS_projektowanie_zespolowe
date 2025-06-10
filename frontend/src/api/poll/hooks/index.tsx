@@ -45,3 +45,9 @@ export const useUserSubmission = (id?: string) => {
     enabled: Boolean(id),
   });
 };
+
+export const useCreatePoll = () => {
+  return useMutation({
+    mutationFn: POLL_MUTATIONS.createPoll,
+  });
+};

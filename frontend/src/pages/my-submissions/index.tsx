@@ -14,6 +14,7 @@ const MySubmissions = () => {
       <Text fontSize="2xl" as="b">
         My Submissions
       </Text>
+      {data?.length === 0 && <Text>There is nothing to show</Text>}
       <Stack>
         {data?.map((submission) => (
           <SingleSubmission
