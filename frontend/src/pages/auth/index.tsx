@@ -6,11 +6,12 @@ import { useLogin, useRegister, useSessionData } from '@/api/auth/hooks';
 import { Box, Button, HStack, Stack, Text } from '@chakra-ui/react';
 import PollIcon from '@/components/icons/Poll';
 import AuthForm from './components/AuthForm';
+import { toaster } from '@/components/ui/toaster';
 
 const AuthScreen = () => {
   const { t } = useTranslation('auth');
-  const { control, handleSubmit, setError } = useForm<AuthFormData>();
-  const { mutate: register, isPending: isRegisterPending } = useRegister();
+  const { control, handleSubmit, setError, reset } = useForm<AuthFormData>();
+  const { mutateAsync: register, isPending: isRegisterPending } = useRegister();
   const { isRefetching: isSessionRefetching } = useSessionData();
   const { mutate: login, isPending: isLoginPending } = useLogin({
     onInvalidCredentials: () => {
@@ -26,7 +27,17 @@ const AuthScreen = () => {
     if (authMode === 'login') {
       login({ username, password });
     } else {
-      register({ username, password, email: email ?? '' });
+      try {
+        register({ username, password, email: email ?? '' });
+        toaster.success({
+          title: 'You can login in now!',
+          description: 'You have successfully registered',
+        });
+        reset({ email: '', password: '', username: '' });
+        setAuthMode('login');
+      } catch {
+        toaster.error({ title: 'Failed to register' });
+      }
     }
   };
 
