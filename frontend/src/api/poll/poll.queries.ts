@@ -3,6 +3,7 @@ import backendUrl from '../backendUrl';
 import {
   PollResponse,
   PollResultsResponse,
+  PollsListingResponse,
   UserSubmission,
   UserSubmissionsResult,
 } from './types';
@@ -37,7 +38,7 @@ const getUserSubmission = async (id: string) => {
 const getPolls = async (type: 'public' | 'private' | 'all') => {
   const endpoint = `${backendUrl}/surveys?visibility=${type}`;
   const { data } = await axios.get(endpoint);
-  return data;
+  return data as PollsListingResponse;
 };
 
 const POLL_QUERIES = {

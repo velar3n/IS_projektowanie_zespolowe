@@ -31,6 +31,9 @@ export type FilledPollRequest = Array<SingleAnswer>;
 export type UserSubmission = {
   answers: Array<{
     id: number;
+    question: {
+      id: number;
+    };
     selectedOptions: Array<SingleOptionData>;
   }>;
   id: number;
@@ -69,3 +72,13 @@ export type CreatePollRequest = {
     options: string[];
   }>;
 };
+
+export type PollsListingResponse = Array<{
+  id: number;
+  title: string;
+  description: string;
+  startDate: string;
+  endDate: string;
+  createdBy: string | null;
+  public: boolean;
+}>;

@@ -3,6 +3,8 @@ package com.projektowanie.zespolowe.applicationbackend.controllers;
 import com.projektowanie.zespolowe.applicationbackend.data.enums.Visibility;
 import com.projektowanie.zespolowe.applicationbackend.data.model.Survey;
 import com.projektowanie.zespolowe.applicationbackend.services.SurveyService;
+import com.projektowanie.zespolowe.applicationbackend.services.SurveyService.SurveySubmissionResponse;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -51,8 +53,8 @@ public class SurveyController {
             if (user != null) {
                 username = Optional.of(user.getUsername());
             }
-            surveyService.createSurveyResponse(id, submissionRequest, username);
-            return ResponseEntity.ok().build();
+            SurveySubmissionResponse response = surveyService.createSurveyResponse(id, submissionRequest, username);
+            return ResponseEntity.ok().body(response);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
         }

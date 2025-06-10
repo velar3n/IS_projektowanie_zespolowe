@@ -61,7 +61,8 @@ public class SurveyService {
 
     }
 
-    public void createSurveyResponse(String surveyId, List<SingleQuestionAnswer> surveySubmissionRequest,
+    public SurveySubmissionResponse createSurveyResponse(String surveyId,
+            List<SingleQuestionAnswer> surveySubmissionRequest,
             Optional<String> username) {
         Survey matchingSurvey = surveyRepository.findById(surveyId)
                 .orElseThrow(() -> new IllegalArgumentException("survey with this id does not exist"));
@@ -69,6 +70,12 @@ public class SurveyService {
         UserSubmission userSubmission = new UserSubmission();
         if (username.isPresent()) {
             userSubmission.setCreatedBy(username.get());
+            List<UserSubmission> existingSubmission = userSubmissionRepository.findAllByCreatedByAndSurveyId(
+                    username.get(),
+                    Long.parseLong(surveyId));
+            if (existingSubmission.size() > 0) {
+                throw new IllegalArgumentException("you cannot submit answer to a poll twice");
+            }
         }
         userSubmission.setSurvey(matchingSurvey);
 
@@ -91,7 +98,8 @@ public class SurveyService {
         }).toList();
 
         userSubmission.setAnswers(answers);
-        userSubmissionRepository.save(userSubmission);
+        UserSubmission submission = userSubmissionRepository.save(userSubmission);
+        return new SurveySubmissionResponse(submission.getId());
     }
 
     public SurveyResultsResponse getSurveyResults(Long surveyId) {
@@ -168,5 +176,8 @@ public class SurveyService {
 
     public void removeSurvey(String id) {
         surveyRepository.deleteById(id);
+    }
+
+    public record SurveySubmissionResponse(Long submissionId) {
     }
 }

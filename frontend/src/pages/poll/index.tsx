@@ -35,7 +35,7 @@ const getDefaultValues = (data: PollResponse): PollSubmissionFormData => {
 };
 
 const SinglePoll = () => {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const submissionId = searchParams.get('submissionId');
 
   const { pollId } = useParams();
@@ -54,12 +54,13 @@ const SinglePoll = () => {
     if (!pollId) return;
     const requestData: FilledPollRequest = data.anwers.map((answer) => ({
       questionId: answer.questionId.toString(),
-      selectedIds: answer.selected.map((selectedItem) =>
-        selectedItem.optionId.toString(),
-      ),
+      selectedIds: answer.selected
+        .filter((answer) => answer.selected)
+        .map((answer) => answer.optionId.toString()),
     }));
     try {
-      await submitPoll({ data: requestData, pollId });
+      const submissionData = await submitPoll({ data: requestData, pollId });
+      setSearchParams({ submissionId: submissionData.submissionId.toString() });
       toaster.success({ title: 'Successfully submitted the form' });
     } catch {
       toaster.error({ title: 'Failed to submit the poll' });
@@ -81,7 +82,7 @@ const SinglePoll = () => {
       const newValues: PollSubmissionFormData = {
         anwers: data.questions.map((question) => {
           const matchingAnswer = submissionDetails.answers.find(
-            (a) => a.id === question.id,
+            (a) => a.question.id === question.id,
           );
 
           return {
@@ -92,7 +93,7 @@ const SinglePoll = () => {
               );
               return {
                 optionId: option.id,
-                selected: !!isSelected,
+                selected: Boolean(isSelected),
               };
             }),
           };
@@ -118,7 +119,11 @@ const SinglePoll = () => {
           startDate={data?.startDate}
           endDate={data?.endDate}
           onSubmit={
-            isEditable ? () => handleSubmit(handlePollSubmisstion)() : undefined
+            isEditable
+              ? () => {
+                  handleSubmit(handlePollSubmisstion)();
+                }
+              : undefined
           }
         />
         <PollQuestions
