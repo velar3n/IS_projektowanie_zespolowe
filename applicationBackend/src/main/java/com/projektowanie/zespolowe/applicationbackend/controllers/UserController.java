@@ -53,7 +53,6 @@ public class UserController {
             @AuthenticationPrincipal UserDetails userDetails,
             @PathVariable String id) {
         if (userDetails == null) {
-            System.out.println("CHUJ");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         try {

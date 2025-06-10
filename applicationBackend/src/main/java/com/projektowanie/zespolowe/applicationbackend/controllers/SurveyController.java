@@ -1,5 +1,6 @@
 package com.projektowanie.zespolowe.applicationbackend.controllers;
 
+import com.projektowanie.zespolowe.applicationbackend.data.enums.Visibility;
 import com.projektowanie.zespolowe.applicationbackend.data.model.Survey;
 import com.projektowanie.zespolowe.applicationbackend.services.SurveyService;
 import org.springframework.http.ResponseEntity;
@@ -59,16 +60,28 @@ public class SurveyController {
     }
 
     @GetMapping("/surveys")
-    public ResponseEntity<List<Survey>> getAllSurveys(@RequestParam(required = false) Boolean isPublic) {
+    public ResponseEntity<List<Survey>> getAllSurveys(
+            @RequestParam(required = false, defaultValue = "all") Visibility visibility) {
         List<Survey> surveys;
-        if (isPublic == null) {
+        if (visibility == Visibility.ALL) {
             surveys = surveyService.getAllSurveys();
-        } else if (isPublic) {
-            surveys = surveyService.getActiveSurveys();
+        } else if (visibility == Visibility.PUBLIC) {
+            surveys = surveyService.getPublicSurveys();
         } else {
-            surveys = surveyService.getInactiveSurveys();
+            surveys = surveyService.getPrivateSurveys();
         }
         return ResponseEntity.ok(surveys);
+    }
+
+    @DeleteMapping("/surveys/{id}")
+    public ResponseEntity<Void> deleteSurvey(
+            @PathVariable String id) {
+        try {
+            surveyService.removeSurvey(id);
+            return ResponseEntity.ok().body(null);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @GetMapping("/surveys/{id}/results")

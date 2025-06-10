@@ -1,8 +1,8 @@
 export type PollRow = {
   id: number;
-  name: string;
+  title: string;
   createdBy: string;
   startDate: string;
   endDate: string;
-  isPublic: boolean;
+  public: boolean;
 };

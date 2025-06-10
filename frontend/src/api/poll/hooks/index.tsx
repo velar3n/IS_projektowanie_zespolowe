@@ -1,11 +1,17 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import POLL_MUTATIONS from '../poll.mutations';
 import POLL_QUERIES from '../poll.queries';
 import POLL_KEYS from '@/api/poll/poll.keys';
 
 export const useDeletePoll = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: POLL_MUTATIONS.deletePoll,
+    onSuccess: () => {
+      queryClient.refetchQueries({
+        queryKey: [...POLL_KEYS.GET_POLLS],
+      });
+    },
   });
 };
 
@@ -49,5 +55,12 @@ export const useUserSubmission = (id?: string) => {
 export const useCreatePoll = () => {
   return useMutation({
     mutationFn: POLL_MUTATIONS.createPoll,
+  });
+};
+
+export const usePolls = (type: 'public' | 'private' | 'all' = 'all') => {
+  return useQuery({
+    queryFn: () => POLL_QUERIES.getPolls(type),
+    queryKey: [...POLL_KEYS.GET_POLLS, type],
   });
 };

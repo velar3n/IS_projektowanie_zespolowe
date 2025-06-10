@@ -154,15 +154,19 @@ public class SurveyService {
         return surveyRepository.findAll();
     }
 
-    public List<Survey> getActiveSurveys() {
+    public List<Survey> getPublicSurveys() {
         return surveyRepository.findAllByIsPublic(true);
     }
 
-    public List<Survey> getInactiveSurveys() {
+    public List<Survey> getPrivateSurveys() {
         return surveyRepository.findAllByIsPublic(false);
     }
 
     public Optional<Survey> getSurveyDetails(String id) {
         return surveyRepository.findById(id);
+    }
+
+    public void removeSurvey(String id) {
+        surveyRepository.deleteById(id);
     }
 }

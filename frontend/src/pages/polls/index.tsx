@@ -1,6 +1,5 @@
 import DataTable from '@/components/table';
 import { Stack } from '@chakra-ui/react';
-import exampleData from './data';
 import {
   CellContext,
   ColumnDef,
@@ -10,18 +9,21 @@ import { PollRow } from './types';
 import BooleanCell from '@/components/table/components/BooleanCell';
 import { camelCaseToTitleCase } from '@/utils/text';
 import ActionCell from '@/components/table/components/ActionCell';
-import { useState } from 'react';
 import NavigationCell from '@/components/table/components/NavigationCell';
 import { useNavigate } from 'react-router-dom';
+import { useDeletePoll, usePolls } from '@/api/poll/hooks';
 
 const Polls = () => {
   const columnHelper = createColumnHelper<PollRow>();
-  const [data, setData] = useState(exampleData);
+  const { data: pollsData, isLoading } = usePolls('all');
+  const { mutate: deletePoll } = useDeletePoll();
   const navigate = useNavigate();
+
+  const data = isLoading ? [] : pollsData;
 
   const columns = [
     columnHelper.accessor('id', { cell: (ctx) => ctx.getValue() }),
-    columnHelper.accessor('name', {
+    columnHelper.accessor('title', {
       cell: (ctx) => (
         <NavigationCell
           label={ctx.getValue()}
@@ -41,7 +43,7 @@ const Polls = () => {
       cell: (ctx) => ctx.getValue(),
       header: (ctx) => camelCaseToTitleCase(ctx.column.id),
     }),
-    columnHelper.accessor('isPublic', {
+    columnHelper.accessor('public', {
       cell: (ctx) => <BooleanCell value={ctx.getValue()} />,
       header: (ctx) => camelCaseToTitleCase(ctx.column.id),
     }),
@@ -56,10 +58,9 @@ const Polls = () => {
                 label: 'Delete',
                 value: 'delete',
                 destructive: true,
-                onClick: () =>
-                  setData((prev) =>
-                    prev.filter((_, index) => index !== currentRowId),
-                  ),
+                onClick: () => {
+                  deletePoll(currentRowId.toString());
+                },
               },
             ]}
           />
@@ -74,7 +75,7 @@ const Polls = () => {
       <DataTable
         data={data}
         columns={columns as ColumnDef<PollRow>[]}
-        searchColumnId="name"
+        searchColumnId="title"
         buttonConfig={{
           label: 'Add form',
           onClick: () => {

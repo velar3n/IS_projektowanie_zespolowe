@@ -34,11 +34,18 @@ const getUserSubmission = async (id: string) => {
   return data as UserSubmission;
 };
 
+const getPolls = async (type: 'public' | 'private' | 'all') => {
+  const endpoint = `${backendUrl}/surveys?visibility=${type}`;
+  const { data } = await axios.get(endpoint);
+  return data;
+};
+
 const POLL_QUERIES = {
   getPollById,
   getUserSubmissions,
   getPollResults,
   getUserSubmission,
+  getPolls,
 };
 
 export default POLL_QUERIES;
