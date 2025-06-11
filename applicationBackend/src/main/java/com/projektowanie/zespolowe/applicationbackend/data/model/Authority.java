@@ -1,6 +1,8 @@
 package com.projektowanie.zespolowe.applicationbackend.data.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.projektowanie.zespolowe.applicationbackend.data.enums.UserAuthority;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -8,19 +10,20 @@ import lombok.*;
 @Setter
 @Entity
 @Table(name = "authorities")
-@IdClass(AuthorityId.class)  // Defines composite key
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Authority {
-
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     @Column(name = "username", nullable = false)
     private String username;
 
-    @Id
     @Column(name = "authority", nullable = false)
-    private String authority;
+    @Enumerated(EnumType.STRING)
+    private UserAuthority authority;
 
     @ManyToOne
     @JsonBackReference

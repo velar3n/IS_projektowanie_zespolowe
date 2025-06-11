@@ -13,6 +13,8 @@ import Poll from './pages/polls/poll';
 import SinglePoll from './pages/poll';
 import { Toaster } from './components/ui/toaster';
 import AdminLayout from './layouts/AdminLayout';
+import MySubmissions from './pages/my-submissions';
+import PollResults from './pages/poll/results';
 
 const queryClient = new QueryClient();
 
@@ -26,6 +28,8 @@ function App() {
               <Route path="/" element={<WithNavbarLayout />}>
                 <Route index element={<Home />} />
                 <Route path="/poll/:pollId" element={<SinglePoll />} />
+                <Route path="/poll/:pollId/results" element={<PollResults />} />
+                <Route path="/my-submissions" element={<MySubmissions />} />
                 <Route element={<AdminLayout />}>
                   <Route path="/users" element={<Users />} />
                   <Route path="/polls" element={<Polls />} />

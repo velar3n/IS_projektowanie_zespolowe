@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.data.annotation.CreatedBy;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,6 +24,7 @@ public class UserSubmission {
 
   @ManyToOne
   @JoinColumn(name = "survey_id")
+  @JsonIgnoreProperties({ "questions" })
   private Survey survey;
 
   @OneToMany(mappedBy = "submission", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -12,7 +12,7 @@ public class SurveyMapper {
                 .description(surveyRequest.description())
                 .startDate(surveyRequest.startDate())
                 .endDate(surveyRequest.endDate())
-                .isActive(surveyRequest.isActive().orElse(false)) // Default to false if null
+                .isPublic(surveyRequest.isPublic().orElse(false)) // Default to false if null
                 .build();
     }
 }

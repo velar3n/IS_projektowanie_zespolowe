@@ -47,7 +47,6 @@ const SurveyQuestions = ({ control }: SurveyQuestionsProps) => {
             append({
               questionText: '',
               isMulti: false,
-              isRequired: true,
               options: [],
             });
           }}

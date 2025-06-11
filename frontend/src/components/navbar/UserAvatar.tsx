@@ -12,6 +12,7 @@ import {
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
 const UserAvatar = () => {
   const [open, setOpen] = useState(false);
@@ -19,6 +20,7 @@ const UserAvatar = () => {
   const { mutate: logout, isPending: isLogoutPending } = useLogout();
 
   const userName = useUserStore((state) => state.user?.username);
+  const navigate = useNavigate();
 
   return (
     <Popover.Root open={open} onOpenChange={(e) => setOpen(e.open)}>
@@ -37,6 +39,13 @@ const UserAvatar = () => {
               <Stack padding="32px" alignItems="center" width="100%" gap="12px">
                 <Text>{t('title', { name: userName })}</Text>
                 <Separator width="100%" />
+                <Button
+                  variant="ghost"
+                  w="100%"
+                  onClick={() => navigate('/my-submissions')}
+                >
+                  See my submissions
+                </Button>
                 <Button
                   width="100%"
                   colorPalette="red"

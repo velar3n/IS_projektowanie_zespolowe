@@ -85,11 +85,6 @@ const SurveyQuestion = ({
           name={`${name}.isMulti`}
           label={t('switches.isMulti')}
         />
-        <ControlledSwitch
-          control={control}
-          name={`${name}.isRequired`}
-          label={t('switches.isRequired')}
-        />
       </Stack>
       <Text>{t('options.title')}</Text>
       <Field.Root invalid={!!optionsError?.root}>

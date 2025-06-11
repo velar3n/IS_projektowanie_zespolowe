@@ -28,6 +28,7 @@ const PollQuestions = ({
             key={field.id}
             index={index}
             control={control}
+            disabled={disabled}
             {...matchingQuestion}
           />
         );

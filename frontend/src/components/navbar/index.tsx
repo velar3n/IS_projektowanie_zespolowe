@@ -20,12 +20,13 @@ const navbarItems: NavbarItemType[] = [
     path: '/users',
     key: 'users',
     icon: <FaUser />,
+    requiredRole: 'ADMIN',
   },
   {
     path: '/polls',
     key: 'polls',
     icon: <FaChartBar />,
-    requiredRole: 'admin',
+    requiredRole: 'ADMIN',
   },
 ];
 

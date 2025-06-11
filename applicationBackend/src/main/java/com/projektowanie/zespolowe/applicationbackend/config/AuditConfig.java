@@ -1,6 +1,5 @@
 package com.projektowanie.zespolowe.applicationbackend.config;
 
-import com.projektowanie.zespolowe.applicationbackend.data.model.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
@@ -18,7 +17,8 @@ public class AuditConfig {
         return () -> {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-            if (authentication == null || !authentication.isAuthenticated() || authentication.getPrincipal().equals("anonymousUser")) {
+            if (authentication == null || !authentication.isAuthenticated()
+                    || authentication.getPrincipal().equals("anonymousUser")) {
                 return Optional.empty();
             }
 

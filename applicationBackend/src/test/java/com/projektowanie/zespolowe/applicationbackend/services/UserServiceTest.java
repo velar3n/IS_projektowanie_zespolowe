@@ -1,5 +1,6 @@
 package com.projektowanie.zespolowe.applicationbackend.services;
 
+import com.projektowanie.zespolowe.applicationbackend.data.enums.UserAuthority;
 import com.projektowanie.zespolowe.applicationbackend.data.model.User;
 import com.projektowanie.zespolowe.applicationbackend.data.model.UserRepository;
 import com.projektowanie.zespolowe.applicationbackend.data.model.UserInformationRepository;
@@ -41,7 +42,7 @@ class UserServiceTest {
         String username = "testUser";
         String password = "password";
         String email = "test@example.com";
-        Set<String> roles = Set.of("ROLE_USER");
+        Set<UserAuthority> roles = Set.of(UserAuthority.USER);
 
         when(userRepository.existsById(username)).thenReturn(false);
         when(passwordEncoder.encode(password)).thenReturn("encodedPassword");
@@ -64,8 +65,8 @@ class UserServiceTest {
         when(userRepository.existsById(username)).thenReturn(true);
 
         // Act & Assert
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
-                userService.createUser(username, "password", Set.of("ROLE_USER"), "email@example.com"));
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> userService.createUser(username, "password", Set.of(UserAuthority.USER), "email@example.com"));
         assertEquals("User with username 'existingUser' already exists.", exception.getMessage());
         verify(userRepository, never()).save(any());
     }

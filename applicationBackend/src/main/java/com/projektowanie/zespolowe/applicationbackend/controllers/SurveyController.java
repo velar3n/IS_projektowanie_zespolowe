@@ -1,7 +1,10 @@
 package com.projektowanie.zespolowe.applicationbackend.controllers;
 
+import com.projektowanie.zespolowe.applicationbackend.data.enums.Visibility;
 import com.projektowanie.zespolowe.applicationbackend.data.model.Survey;
 import com.projektowanie.zespolowe.applicationbackend.services.SurveyService;
+import com.projektowanie.zespolowe.applicationbackend.services.SurveyService.SurveySubmissionResponse;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -50,8 +53,8 @@ public class SurveyController {
             if (user != null) {
                 username = Optional.of(user.getUsername());
             }
-            surveyService.createSurveyResponse(id, submissionRequest, username);
-            return ResponseEntity.ok().build();
+            SurveySubmissionResponse response = surveyService.createSurveyResponse(id, submissionRequest, username);
+            return ResponseEntity.ok().body(response);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
         }
@@ -59,16 +62,37 @@ public class SurveyController {
     }
 
     @GetMapping("/surveys")
-    public ResponseEntity<List<Survey>> getAllSurveys(@RequestParam(required = false) Boolean active) {
+    public ResponseEntity<List<Survey>> getAllSurveys(
+            @RequestParam(required = false, defaultValue = "all") Visibility visibility) {
         List<Survey> surveys;
-        if (active == null) {
+        if (visibility == Visibility.ALL) {
             surveys = surveyService.getAllSurveys();
-        } else if (active) {
-            surveys = surveyService.getActiveSurveys();
+        } else if (visibility == Visibility.PUBLIC) {
+            surveys = surveyService.getPublicSurveys();
         } else {
-            surveys = surveyService.getInactiveSurveys();
+            surveys = surveyService.getPrivateSurveys();
         }
         return ResponseEntity.ok(surveys);
+    }
+
+    @DeleteMapping("/surveys/{id}")
+    public ResponseEntity<Void> deleteSurvey(
+            @PathVariable String id) {
+        try {
+            surveyService.removeSurvey(id);
+            return ResponseEntity.ok().body(null);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @GetMapping("/surveys/{id}/results")
+    public ResponseEntity<?> getSurveyResults(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok().body(surveyService.getSurveyResults(id));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
+        }
     }
 
     public record ErrorResponse(String error) {
@@ -79,7 +103,7 @@ public class SurveyController {
             String description,
             LocalDateTime startDate,
             LocalDateTime endDate,
-            Optional<Boolean> isActive,
+            Optional<Boolean> isPublic,
             List<QuestionRequest> questions) {
     }
 

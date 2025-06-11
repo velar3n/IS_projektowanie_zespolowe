@@ -1,11 +1,6 @@
-import { AuthRoles } from '@/api/types';
+import { UserDetailsResponse } from '@/api/types';
 
-export type User = {
-  username: string;
-  email: string;
-  status: string;
-  roles: AuthRoles[];
-};
+export type User = UserDetailsResponse;
 
 export type UserStore = {
   user: User | null;

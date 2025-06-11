@@ -5,7 +5,6 @@ export type PollOption = {
 export type PollQuestion = {
   questionText: string;
   isMulti: boolean;
-  isRequired: boolean;
   options: Array<PollOption>;
 };
 
