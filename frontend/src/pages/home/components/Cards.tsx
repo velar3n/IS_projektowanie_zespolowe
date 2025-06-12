@@ -13,14 +13,16 @@ const Cards = () => {
     <Stack width="100%">
       <Text as="b">Browse surveys</Text>
       <Grid templateColumns="repeat(3, 1fr)">
-        {data?.map((poll) => (
-          <SingleCard
-            key={poll.id}
-            title={poll.title}
-            description={poll.description}
-            pollId={poll.id}
-          />
-        ))}
+        {data &&
+          Array.isArray(data) &&
+          data.map((poll) => (
+            <SingleCard
+              key={poll.id}
+              title={poll.title}
+              description={poll.description}
+              pollId={poll.id}
+            />
+          ))}
       </Grid>
     </Stack>
   );

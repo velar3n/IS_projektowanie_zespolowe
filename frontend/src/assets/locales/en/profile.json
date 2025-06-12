@@ -1,0 +1,40 @@
+{
+  "title": "User Profile",
+  "userInfo": {
+    "title": "Account Information",
+    "username": "Username",
+    "email": "Email"
+  },
+  "changePassword": {
+    "title": "Change Password",
+    "description": "Update your password to keep your account secure",
+    "button": "Change Password",
+    "form": {
+      "currentPassword": {
+        "label": "Current Password",
+        "placeholder": "Enter your current password"
+      },
+      "newPassword": {
+        "label": "New Password",
+        "placeholder": "Enter your new password"
+      },
+      "confirmPassword": {
+        "label": "Confirm New Password",
+        "placeholder": "Confirm your new password",
+        "error": "Passwords do not match"
+      }
+    },
+    "success": {
+      "title": "Password Changed",
+      "description": "Your password has been successfully updated"
+    },
+    "errors": {
+      "title": "Password Change Failed",
+      "description": "An error occurred while changing your password",
+      "incorrectPassword": "Current password is incorrect"
+    }
+  },
+  "errors": {
+    "userNotFound": "User information not available"
+  }
+}
