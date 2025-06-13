@@ -18,9 +18,10 @@ const Cards = () => {
   );
 
   return (
-    <Stack width="100%">
+    <Stack width="100%" gap="24px">
       <Text as="b">Browse surveys</Text>
-      <Grid templateColumns="repeat(3, 1fr)">
+      {data?.length === 0 && <Text>There are no surveys</Text>}
+      <Grid templateColumns="repeat(3, 1fr)" gapY="15px">
         {activePolls?.map((poll) => (
           <SingleCard
             key={poll.id}

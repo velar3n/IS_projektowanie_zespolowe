@@ -5,6 +5,7 @@ import AUTH_KEYS from '@/api/auth/auth.keys';
 import { useUserStore } from '@/stores/user';
 import { RegisterData } from '../types';
 import { AUTH_QUERIES } from '../auth.queries';
+import { useNavigate } from 'react-router-dom';
 
 export const useLogin = (settings?: {
   onInvalidCredentials?: () => void;
@@ -51,6 +52,7 @@ export const useRegister = () => {
 
 export const useLogout = () => {
   const deleteUser = useUserStore((state) => state.clearUser);
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: () => {
@@ -58,6 +60,7 @@ export const useLogout = () => {
     },
     onSuccess: () => {
       deleteUser();
+      navigate('/');
       queryClient.refetchQueries({
         queryKey: [...AUTH_KEYS.GET_SESSION_DATA],
       });

@@ -50,10 +50,15 @@ const Polls = () => {
     {
       id: 'action',
       cell: (ctx: CellContext<PollRow, undefined>) => {
-        const currentRowId = ctx.row.index;
+        const currentRowId = ctx.row.original.id;
         return (
           <ActionCell
             config={[
+              {
+                label: 'View results',
+                value: 'viewResults',
+                onClick: () => navigate(`/poll/${currentRowId}/results`),
+              },
               {
                 label: 'Delete',
                 value: 'delete',
