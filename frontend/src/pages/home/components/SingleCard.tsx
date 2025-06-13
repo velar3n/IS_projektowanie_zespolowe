@@ -1,6 +1,7 @@
 import { Button, Card } from '@chakra-ui/react';
 import { getRandomPastelColor } from './colors';
 import { useNavigate } from 'react-router-dom';
+import { useUserStore } from '@/stores/user';
 
 type SingleCardProps = {
   title: string;
@@ -10,6 +11,8 @@ type SingleCardProps = {
 
 const SingleCard = ({ title, description, pollId }: SingleCardProps) => {
   const navigate = useNavigate();
+  const user = useUserStore((state) => state.user);
+
   return (
     <Card.Root maxW="sm" overflow="hidden">
       <div
@@ -27,9 +30,13 @@ const SingleCard = ({ title, description, pollId }: SingleCardProps) => {
         <Button
           variant="solid"
           px="12px"
-          onClick={() => navigate(`/poll/${pollId}`)}
+          onClick={() =>
+            user
+              ? navigate(`/poll/${pollId}`)
+              : navigate(`/poll/${pollId}/results`)
+          }
         >
-          Vote
+          {user ? 'Vote' : 'See results'}
         </Button>
       </Card.Footer>
     </Card.Root>
