@@ -1,2 +1,2 @@
 # IS_projektowanie_zespolowe
-Projekt z przedmiotu "Przogramowanie zespołowe" 
+Projekt z przedmiotu "Programowanie zespołowe" 
