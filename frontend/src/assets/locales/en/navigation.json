@@ -3,7 +3,8 @@
   "login": "Login",
   "popover": {
     "title": "Hello there, {{name}}",
-    "logout": "Logout"
+    "logout": "Logout",
+    "profile": "Profile"
   },
   "items": {
     "home": "Home",

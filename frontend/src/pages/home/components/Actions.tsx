@@ -111,7 +111,7 @@ const Actions = () => {
                     </VStack>
                   </Card.Root>
 
-                  {user?.roles.includes('ADMIN') && (
+                  {user?.roles && user.roles.includes('ADMIN') && (
                     <Card.Root
                       p={4}
                       borderRadius="md"

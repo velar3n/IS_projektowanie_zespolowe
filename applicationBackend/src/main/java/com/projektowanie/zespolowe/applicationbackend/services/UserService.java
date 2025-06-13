@@ -130,4 +130,17 @@ public class UserService implements UserDetailsService {
         return userSubmission;
     }
 
+    @Transactional
+    public void changePassword(String username, String currentPassword, String newPassword) {
+        User user = userRepository.findById(username)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        
+        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+            throw new IllegalArgumentException("Current password is incorrect");
+        }
+        
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
+
 }

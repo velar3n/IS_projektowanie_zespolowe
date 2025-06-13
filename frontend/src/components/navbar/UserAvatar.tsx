@@ -42,6 +42,16 @@ const UserAvatar = () => {
                 <Button
                   variant="ghost"
                   w="100%"
+                  onClick={() => {
+                    navigate('/profile');
+                    setOpen(false);
+                  }}
+                >
+                  {t('profile')}
+                </Button>
+                <Button
+                  variant="ghost"
+                  w="100%"
                   onClick={() => navigate('/my-submissions')}
                 >
                   See my submissions
