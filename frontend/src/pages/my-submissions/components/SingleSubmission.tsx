@@ -22,6 +22,7 @@ const SingleSubmission = ({
       borderRadius="lg"
       padding="12px"
       gap="32px"
+      justifyContent={'space-between'}
     >
       <HStack>
         <Stack>

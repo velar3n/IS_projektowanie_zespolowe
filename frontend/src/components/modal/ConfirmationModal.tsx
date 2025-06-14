@@ -3,11 +3,12 @@ import { ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 type ConfirmationModalProps = {
-  trigger: ReactNode;
+  trigger?: ReactNode;
   destructive?: boolean;
   header?: string;
   body?: string;
   action: () => void;
+  children?: ReactNode;
 };
 
 const ConfirmationModal = ({
@@ -15,6 +16,7 @@ const ConfirmationModal = ({
   trigger,
   body,
   destructive,
+  children,
   action,
 }: ConfirmationModalProps) => {
   const { t } = useTranslation('common', { keyPrefix: 'dialog' });
@@ -27,7 +29,7 @@ const ConfirmationModal = ({
       lazyMount
       unmountOnExit
     >
-      <Dialog.Trigger asChild>{trigger}</Dialog.Trigger>
+      <Dialog.Trigger asChild>{trigger ?? children}</Dialog.Trigger>
       <Portal>
         <Dialog.Backdrop />
         <Dialog.Positioner>

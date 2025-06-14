@@ -69,12 +69,12 @@ const ProfilePage = () => {
   }
 
   return (
-    <Box p={8} maxW="800px" mx="auto">
+    <Box p={8} maxW="800px" mx="auto" w="100%">
       <Stack gap={8}>
         <Heading size="xl">{t('title')}</Heading>
 
         {/* User Information Section */}
-        <Card.Root>
+        <Card.Root p="12px">
           <Card.Header>
             <Heading size="lg">{t('userInfo.title')}</Heading>
           </Card.Header>
@@ -99,15 +99,16 @@ const ProfilePage = () => {
         <Separator />
 
         {/* Change Password Section */}
-        <Card.Root>
+        <Card.Root p="12px">
           <Card.Header>
             <Heading size="lg">{t('changePassword.title')}</Heading>
             <Text color="gray.600">{t('changePassword.description')}</Text>
           </Card.Header>
-          <Card.Body>
+          <Card.Body mt="24px">
             <Stack gap={6}>
               <ChangePasswordForm control={control} />
               <Button
+                px="12px"
                 colorPalette="purple"
                 onClick={handleSubmit(handleChangePassword)}
                 loading={isChangingPassword}
